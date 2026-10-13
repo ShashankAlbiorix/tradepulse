@@ -1,0 +1,492 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap');
+
+/* ==========================================================================
+   TradePulse Financial Terminal — Institutional Dark Theme (TradingView / Linear)
+   Palette: Obsidian (#070A12), Deep Slate (#0D1322), Border (#1E293B),
+            Bullish Emerald (#10B981), Bearish Crimson (#EF4444), Sky (#38BDF8)
+   ========================================================================== */
+
+/* Global App Background & Container Overrides */
+html, body, [data-testid="stAppViewContainer"], .stApp, section.main {
+    background-color: #070A12 !important;
+    color: #F1F5F9 !important;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Remove Streamlit default blank headers and footer */
+header[data-testid="stHeader"] {
+    display: none !important;
+}
+
+#MainMenu, footer {
+    visibility: hidden;
+}
+
+.block-container {
+    padding-top: 1.2rem !important;
+    padding-bottom: 2.5rem !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+    max-width: 100% !important;
+    background-color: transparent !important;
+}
+
+/* ==========================================================================
+   Top Header Bar & Controls
+   ========================================================================== */
+.trade-pulse-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 40px;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.brand-icon-box {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 16px rgba(16, 185, 129, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    flex-shrink: 0;
+}
+
+.brand-title-wrap {
+    font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.45rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+}
+
+.brand-text-main {
+    color: #F8FAFC;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.brand-text-accent {
+    color: #10B981;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin-left: 2px;
+}
+
+.brand-terminal-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    background: rgba(16, 185, 129, 0.12);
+    color: #10B981;
+    padding: 3px 7px;
+    border-radius: 5px;
+    letter-spacing: 0.8px;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    margin-left: 6px;
+    line-height: 1;
+}
+
+/* Search Input Field */
+div[data-testid="stTextInput"] input {
+    border-radius: 8px !important;
+    border: 1px solid #1E293B !important;
+    font-size: 0.90rem !important;
+    background-color: #0D1322 !important;
+    color: #F1F5F9 !important;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+    transition: all 0.15s ease-in-out;
+}
+
+div[data-testid="stTextInput"] input::placeholder {
+    color: #64748B !important;
+}
+
+div[data-testid="stTextInput"] input:focus {
+    border-color: #10B981 !important;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25), inset 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Selectbox Dropdown (BaseWeb & Native Streamlit) */
+div[data-testid="stSelectbox"] > div,
+div[data-testid="stSelectbox"] div[data-baseweb="select"],
+div[data-testid="stSelectbox"] div[data-baseweb="select"] > div,
+div[data-testid="stSelectbox"] div[data-baseweb="select"] [role="combobox"],
+div[data-testid="stSelectbox"] [data-baseweb="select"] * {
+    background-color: #0D1322 !important;
+    color: #F1F5F9 !important;
+    border-color: #1E293B !important;
+}
+
+div[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
+    border-radius: 8px !important;
+    border: 1px solid #1E293B !important;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+div[data-testid="stSelectbox"] svg {
+    fill: #94A3B8 !important;
+}
+
+/* Streamlit Dropdown Popover Menu (Darkened to match) */
+div[data-baseweb="popover"],
+div[data-baseweb="popover"] > div,
+div[data-baseweb="menu"],
+ul[data-testid="stVirtualDropdownMenu"],
+ul[role="listbox"] {
+    background-color: #0D1322 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 8px !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7) !important;
+}
+
+ul[data-testid="stVirtualDropdownMenu"] li,
+li[role="option"] {
+    background-color: #0D1322 !important;
+    color: #F1F5F9 !important;
+}
+
+ul[data-testid="stVirtualDropdownMenu"] li:hover,
+ul[data-testid="stVirtualDropdownMenu"] li[aria-selected="true"],
+li[role="option"]:hover,
+li[role="option"][aria-selected="true"] {
+    background-color: #1E293B !important;
+    color: #10B981 !important;
+}
+
+/* Streamlit Alert Boxes */
+div[data-testid="stAlert"] {
+    background-color: #0D1322 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 8px !important;
+    color: #CBD5E1 !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+}
+
+div[data-testid="stAlert"] [data-testid="stMarkdownContainer"] p {
+    color: #94A3B8 !important;
+    font-size: 0.88rem !important;
+}
+
+/* Primary Action Button (Scan) */
+button[kind="primary"] {
+    background: linear-gradient(135deg, #059669 0%, #10B981 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: #FFFFFF !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 16px rgba(16, 185, 129, 0.25) !important;
+    transition: all 0.15s ease !important;
+}
+
+button[kind="primary"]:hover {
+    background: linear-gradient(135deg, #047857 0%, #059669 100%) !important;
+    box-shadow: 0 0 24px rgba(16, 185, 129, 0.45) !important;
+    transform: translateY(-1px);
+}
+
+/* Secondary Action Button (Refresh) */
+button[kind="secondary"] {
+    background-color: #0D1322 !important;
+    border: 1px solid #1E293B !important;
+    color: #94A3B8 !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: all 0.15s ease !important;
+}
+
+button[kind="secondary"]:hover {
+    background-color: #1E293B !important;
+    border-color: #334155 !important;
+    color: #F8FAFC !important;
+}
+
+/* ==========================================================================
+   Live Auto-Refresh Status Bar
+   ========================================================================== */
+.live-status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #0D1322;
+    border: 1px solid #1E293B;
+    border-radius: 8px;
+    padding: 8px 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    font-size: 0.82rem;
+    color: #94A3B8;
+}
+
+.live-status-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.live-pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #10B981;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 8px #10B981;
+    animation: livePulse 2s infinite;
+}
+
+@keyframes livePulse {
+    0%, 100% { opacity: 0.7; transform: scale(0.95); }
+    50% { opacity: 1; transform: scale(1.25); box-shadow: 0 0 12px #10B981; }
+}
+
+.live-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    color: #F1F5F9;
+    background-color: #161F33;
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid #1E293B;
+}
+
+.live-count-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: #10B981;
+    background-color: rgba(16, 185, 129, 0.1);
+    padding: 3px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+/* ==========================================================================
+   News Article Card (High-Density Financial Terminal)
+   ========================================================================== */
+.news-article-card {
+    background: #0B101E;
+    border: 1px solid #162035;
+    border-radius: 10px;
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 0.9rem;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.news-article-card:hover {
+    border-color: rgba(16, 185, 129, 0.35);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(16, 185, 129, 0.08);
+    transform: translateY(-1px);
+}
+
+.news-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 0.4rem;
+}
+
+.news-card-title-col {
+    flex: 1 1 auto;
+}
+
+.news-headline {
+    font-size: 1.08rem;
+    font-weight: 700;
+    color: #F8FAFC !important;
+    text-decoration: none !important;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    display: block;
+}
+
+.news-headline:hover {
+    color: #38BDF8 !important;
+    text-decoration: underline !important;
+}
+
+.news-card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.news-summary {
+    font-size: 0.88rem;
+    color: #94A3B8;
+    line-height: 1.5;
+    margin-top: 0.35rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Unified Badge Design */
+.source-badge,
+.stock-badge,
+.sentiment-bullish,
+.sentiment-bearish,
+.sentiment-neutral,
+.datetime-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 24px !important;
+    padding: 0 8px !important;
+    border-radius: 5px !important;
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    letter-spacing: 0.03em !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+}
+
+/* 1. Source Badge */
+.source-badge {
+    background-color: #121A2C !important;
+    border: 1px solid #1E293B !important;
+    color: #94A3B8 !important;
+}
+
+/* 2. Bullish Badge */
+.sentiment-bullish {
+    background-color: rgba(16, 185, 129, 0.12) !important;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
+    color: #10B981 !important;
+}
+
+/* 3. Bearish Badge */
+.sentiment-bearish {
+    background-color: rgba(239, 68, 68, 0.12) !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+    color: #F87171 !important;
+}
+
+/* 4. Neutral Badge */
+.sentiment-neutral {
+    background-color: rgba(56, 189, 248, 0.10) !important;
+    border: 1px solid rgba(56, 189, 248, 0.25) !important;
+    color: #38BDF8 !important;
+}
+
+/* 5. Date Time Badge */
+.datetime-badge {
+    background-color: #121A2C !important;
+    border: 1px solid #1E293B !important;
+    color: #64748B !important;
+}
+
+/* AI Reasoning Highlight Box */
+.reasoning-box {
+    font-size: 0.82rem;
+    color: #CBD5E1;
+    background: rgba(15, 23, 42, 0.8);
+    border-left: 3px solid #10B981;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-top: 8px;
+    line-height: 1.45;
+}
+
+.reasoning-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #10B981;
+    background: rgba(16, 185, 129, 0.12);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    margin-right: 6px;
+    letter-spacing: 0.5px;
+    display: inline-block;
+}
+
+/* ==========================================================================
+   Expander for Custom URL Analyzer
+   ========================================================================== */
+div[data-testid="stExpander"] {
+    background-color: #0B101E !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 10px !important;
+    margin-bottom: 1rem !important;
+}
+
+div[data-testid="stExpander"] summary {
+    color: #F8FAFC !important;
+    font-weight: 600 !important;
+}
+
+/* ==========================================================================
+   Streamlit Tabs Styling (Terminal Architecture)
+   ========================================================================== */
+div[data-testid="stTabs"] {
+    margin-bottom: 1.2rem;
+}
+
+div[data-baseweb="tab-list"] {
+    background-color: #0B101E !important;
+    border-radius: 10px !important;
+    padding: 4px !important;
+    border: 1px solid #1E293B !important;
+    gap: 6px !important;
+}
+
+button[data-baseweb="tab"] {
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 8px !important;
+    color: #94A3B8 !important;
+    font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif !important;
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    padding: 8px 18px !important;
+    transition: all 0.15s ease-in-out !important;
+    white-space: nowrap !important;
+}
+
+button[data-baseweb="tab"]:hover {
+    color: #F8FAFC !important;
+    background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+button[data-baseweb="tab"][aria-selected="true"] {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(5, 150, 105, 0.25) 100%) !important;
+    color: #10B981 !important;
+    border: 1px solid rgba(16, 185, 129, 0.4) !important;
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.15) !important;
+}
+
+div[data-baseweb="tab-border"],
+div[data-baseweb="tab-highlight"] {
+    display: none !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #070A12;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1E293B;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+}
+

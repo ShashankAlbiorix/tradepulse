@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradePulse — Spatial Financial Sentiment Terminal | NOSIBLE Qwen-0.6B</title>
+  <meta name="description" content="Antigravity spatial dashboard for financial market news sentiment intelligence powered by NOSIBLE/financial-sentiment-v1.1-base.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- GSAP Animation Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  
+  <link rel="stylesheet" href="/static/styles.css?v=2.1">
+</head>
+<body class="antigravity-body">
+  <!-- Interactive Canvas Particle Field -->
+  <canvas id="ambient-canvas" class="ambient-canvas" aria-hidden="true"></canvas>
+
+  <!-- Ambient Light Orbs -->
+  <div class="space-light-orb orb-primary" aria-hidden="true"></div>
+  <div class="space-light-orb orb-secondary" aria-hidden="true"></div>
+  <div class="space-light-orb orb-accent" aria-hidden="true"></div>
+
+  <!-- Top Floating Telemetry Navigation -->
+  <header class="floating-nav-wrapper">
+    <nav class="nav-glass-bar" id="main-nav">
+      <!-- Brand Section -->
+      <div class="brand-cluster">
+        <div class="brand-orb-core">
+          <div class="brand-orbit-ring"></div>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+            <polyline points="16 7 22 7 22 13"></polyline>
+          </svg>
+        </div>
+        <div class="brand-meta">
+          <div class="brand-title">TRADEPULSE <span class="brand-version">v1.1</span></div>
+          <div class="brand-sub">Neural Financial Core</div>
+        </div>
+      </div>
+
+      <!-- Live Telemetry HUD -->
+      <div class="telemetry-hud">
+        <div class="hud-item" id="hud-clock">
+          <span class="hud-label">TERMINAL TIME</span>
+          <span class="hud-value mono" id="live-clock">--:--:-- UTC</span>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="hud-item">
+          <span class="hud-label">ACTIVE MODEL</span>
+          <div class="model-status-pill" id="model-status-pill">
+            <span class="pulse-beacon" id="beacon-dot"></span>
+            <span class="hud-value mono">Qwen3-0.6B Base</span>
+          </div>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="hud-item" id="hud-device">
+          <span class="hud-label">RUNTIME ENGINE</span>
+          <span class="hud-value mono" id="device-telemetry">Checking...</span>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="nav-actions">
+        <a href="/scraper" class="glass-action-btn" style="border-color: rgba(16, 185, 129, 0.4); color: #10B981;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          ARTICLE SCRAPER & READER
+        </a>
+        <a href="/docs" target="_blank" class="glass-action-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+          API DOCS
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Weightless Market Sentiment Stream Ribbon -->
+  <div class="sentiment-stream-track">
+    <div class="stream-fade-left"></div>
+    <div class="stream-items-inner" id="sentiment-stream">
+      <div class="stream-node"><span class="stream-ticker">NIFTY 50</span> <span class="stream-pill bullish">BULLISH 92%</span> <span class="stream-note">FII inflows surge across bluechips</span></div>
+      <div class="stream-node"><span class="stream-ticker">TECH MAHINDRA</span> <span class="stream-pill bearish">BEARISH 95%</span> <span class="stream-note">Q2 revenue drag & competition pressure</span></div>
+      <div class="stream-node"><span class="stream-ticker">SENSEX</span> <span class="stream-pill bullish">BULLISH 88%</span> <span class="stream-note">Banking index triggers breakout</span></div>
+      <div class="stream-node"><span class="stream-ticker">BRENT CRUDE</span> <span class="stream-pill bearish">BEARISH 84%</span> <span class="stream-note">Global inventory buildup expands</span></div>
+      <div class="stream-node"><span class="stream-ticker">RELIANCE</span> <span class="stream-pill bullish">BULLISH 96%</span> <span class="stream-note">EBITDA beats analyst consensus</span></div>
+      <div class="stream-node"><span class="stream-ticker">RBI POLICY</span> <span class="stream-pill neutral">NEUTRAL 88%</span> <span class="stream-note">Repo rate steady at 6.50%</span></div>
+      <!-- Seamless loop duplicate -->
+      <div class="stream-node"><span class="stream-ticker">NIFTY 50</span> <span class="stream-pill bullish">BULLISH 92%</span> <span class="stream-note">FII inflows surge across bluechips</span></div>
+      <div class="stream-node"><span class="stream-ticker">TECH MAHINDRA</span> <span class="stream-pill bearish">BEARISH 95%</span> <span class="stream-note">Q2 revenue drag & competition pressure</span></div>
+      <div class="stream-node"><span class="stream-ticker">SENSEX</span> <span class="stream-pill bullish">BULLISH 88%</span> <span class="stream-note">Banking index triggers breakout</span></div>
+    </div>
+    <div class="stream-fade-right"></div>
+  </div>
+
+  <!-- Primary Spatial Container -->
+  <main class="spatial-viewport">
+    
+    <!-- Hero Concept Header -->
+    <section class="spatial-hero" id="hero-block">
+      <div class="hero-chip-pill">
+        <span class="chip-glow-dot"></span>
+        <span>AUTONOMOUS NEURAL MARKET INTELLIGENCE</span>
+      </div>
+      <h1 class="hero-headline">Financial Sentiment Intelligence</h1>
+      <p class="hero-subtext">
+        Ingest breaking market stories, scrape full article bodies, and execute deep generative reasoning via 
+        <span class="highlight-mono">NOSIBLE/financial-sentiment-v1.1-base</span>.
+      </p>
+    </section>
+
+    <!-- 3D Interactive Analysis Console -->
+    <section class="perspective-stage">
+      <div class="floating-card-3d" id="studio-card">
+        
+        <!-- Mode Switcher Tabs -->
+        <div class="capsule-tab-nav" role="tablist">
+          <button class="capsule-tab-btn active" id="tab-url-btn" role="tab" aria-selected="true" data-tab="url">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            <span>Live Article URL Scraper</span>
+          </button>
+          <button class="capsule-tab-btn" id="tab-text-btn" role="tab" aria-selected="false" data-tab="text">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            <span>Direct Text / Headline Analyzer</span>
+          </button>
+        </div>
+
+        <!-- URL Scraper Panel -->
+        <div class="console-pane active" id="pane-url" role="tabpanel">
+          <div class="input-glow-group">
+            <div class="input-ornament">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+            </div>
+            <input 
+              type="url" 
+              id="input-article-url" 
+              class="spatial-input mono" 
+              placeholder="Paste financial news link (Moneycontrol, LiveMint, Reuters, ET, Bloomberg)..." 
+              value="https://www.moneycontrol.com/news/business/markets/tech-mahindra-shares-fall-up-to-4-ahead-of-q2-results-this-week-here-s-why-14050077.html"
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <button class="input-clear-trigger" id="btn-clear-url" title="Clear input">&times;</button>
+          </div>
+
+          <!-- Quick Test Feed Presets -->
+          <div class="preset-satellite-row">
+            <span class="satellite-label">Quick Real Feeds:</span>
+            <button type="button" class="satellite-pill" data-url="https://www.moneycontrol.com/news/business/markets/tech-mahindra-shares-fall-up-to-4-ahead-of-q2-results-this-week-here-s-why-14050077.html">
+              <span class="pill-dot red"></span> Tech Mahindra Q2 Slump
+            </button>
+            <button type="button" class="satellite-pill" data-url="https://www.livemint.com/news/india/if-there-s-a-good-time-it-is-now-former-shipping-secretary-on-india-s-shipbuilding-push-11791544472104.html">
+              <span class="pill-dot green"></span> India Shipbuilding Push
+            </button>
+            <button type="button" class="satellite-pill" data-url="https://economictimes.indiatimes.com/markets/stocks/news/oil-slides-as-supply-concerns-ease/articleshow/109012345.cms">
+              <span class="pill-dot blue"></span> Crude Oil Benchmarks
+            </button>
+          </div>
+
+          <!-- Action Launch Trigger -->
+          <div class="console-actions">
+            <div class="keyboard-tip mono">Press <code>Ctrl + Enter</code> to run</div>
+            <button class="antigravity-cta-btn" id="btn-analyze-url">
+              <span class="btn-ripple-layer"></span>
+              <span class="btn-content">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+                <span>Extract Article & Analyze</span>
+              </span>
+              <span class="btn-loader hidden" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Raw Text / Headline Panel -->
+        <div class="console-pane hidden" id="pane-text" role="tabpanel">
+          <div class="textarea-glow-group">
+            <textarea 
+              id="input-article-text" 
+              class="spatial-textarea" 
+              rows="4" 
+              placeholder="Paste raw headline, corporate earnings notice, or policy announcement..."
+              spellcheck="false"
+            >Sensex rallies 850 points as foreign institutional investors turn aggressive net buyers; auto and banking stocks lead widespread gains across Dalal Street.</textarea>
+          </div>
+
+          <!-- Headline Presets -->
+          <div class="preset-satellite-row">
+            <span class="satellite-label">Sample Market Catalysts:</span>
+            <button type="button" class="satellite-pill" data-text="Reliance Industries reports 18% YoY surge in quarterly operating profit, beating Street estimates across all verticals.">
+              <span class="pill-dot green"></span> RIL Earnings Beat
+            </button>
+            <button type="button" class="satellite-pill" data-text="Global equity indices crash 2.8% as geopolitical conflicts intensify and oil spikes past $95 a barrel.">
+              <span class="pill-dot red"></span> Geopolitical Slump
+            </button>
+            <button type="button" class="satellite-pill" data-text="Monetary Policy Committee votes 5-1 to hold the policy repo rate unchanged at 6.50% with neutral stance.">
+              <span class="pill-dot blue"></span> RBI Policy Hold
+            </button>
+          </div>
+
+          <!-- Action Launch Trigger -->
+          <div class="console-actions">
+            <div class="keyboard-tip mono">Press <code>Ctrl + Enter</code> to run</div>
+            <button class="antigravity-cta-btn" id="btn-analyze-text">
+              <span class="btn-ripple-layer"></span>
+              <span class="btn-content">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+                <span>Execute Neural Inference</span>
+              </span>
+              <span class="btn-loader hidden" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3D Spatial Verdict Terminal (Dynamically Revealed) -->
+    <section class="verdict-spatial-stage hidden" id="verdict-container">
+      <div class="verdict-grid-dual">
+        
+        <!-- Primary Kinetic Verdict Card -->
+        <div class="card-3d-tilt verdict-halo-card" id="card-verdict">
+          <div class="card-specular-edge"></div>
+          
+          <div class="verdict-card-topbar">
+            <div class="verdict-signal-tag mono">
+              <span class="radar-dot"></span>
+              SYNTHESIZED MARKET VERDICT
+            </div>
+            <div class="latency-capsule mono" id="verdict-latency">
+              ⚡ 124 ms
+            </div>
+          </div>
+
+          <!-- Main Verdict Beacon and Orbital Gauge -->
+          <div class="verdict-core-display">
+            <!-- Left: Huge Verdict Title and Icon -->
+            <div class="verdict-emblem-cluster">
+              <div class="verdict-floating-badge" id="verdict-badge">
+                <span class="verdict-symbol" id="verdict-icon">🟢</span>
+                <span class="verdict-word" id="verdict-title">BULLISH</span>
+              </div>
+              <div class="verdict-model-spec mono" id="verdict-model-name">
+                NOSIBLE/financial-sentiment-v1.1-base
+              </div>
+            </div>
+
+            <!-- Right: Circular Kinetic Conviction Gauge -->
+            <div class="orbital-gauge-container">
+              <div class="orbital-gauge-svg-wrap">
+                <svg class="gauge-ring-svg" width="120" height="120" viewBox="0 0 120 120">
+                  <circle class="gauge-ring-bg" cx="60" cy="60" r="48"></circle>
+                  <circle class="gauge-ring-active" id="gauge-circle-progress" cx="60" cy="60" r="48"></circle>
+                </svg>
+                <div class="gauge-center-content">
+                  <span class="gauge-pct mono" id="conviction-pct">95%</span>
+                  <span class="gauge-sub">CONVICTION</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Probability Distribution Spectrum -->
+          <div class="spectral-distribution">
+            <div class="spectral-header">
+              <span class="spectral-title mono">PROBABILITY DENSITY</span>
+              <span class="spectral-sum mono">3-CLASS SOFTMAX SPREAD</span>
+            </div>
+            
+            <div class="spectral-bar-track">
+              <div class="spectral-segment seg-bullish" id="bar-bullish" style="width: 2%"></div>
+              <div class="spectral-segment seg-neutral" id="bar-neutral" style="width: 3%"></div>
+              <div class="spectral-segment seg-bearish" id="bar-bearish" style="width: 95%"></div>
+            </div>
+
+            <div class="spectral-legend mono">
+              <div class="legend-slot">
+                <span class="slot-dot dot-bullish"></span>
+                <span>BULLISH: <strong id="val-bullish">2%</strong></span>
+              </div>
+              <div class="legend-slot">
+                <span class="slot-dot dot-neutral"></span>
+                <span>NEUTRAL: <strong id="val-neutral">3%</strong></span>
+              </div>
+              <div class="legend-slot">
+                <span class="slot-dot dot-bearish"></span>
+                <span>BEARISH: <strong id="val-bearish">95%</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Raw Reasoning Inspector Trigger -->
+          <div class="reasoning-accordion-box">
+            <details class="cot-details" id="cot-details-toggle">
+              <summary class="cot-summary mono">
+                <span>View Chain-of-Thought Inspection</span>
+                <span class="cot-chevron">▼</span>
+              </summary>
+              <div class="cot-stream-view mono" id="cot-stream-text">
+                &lt;think&gt; Model reasoning scratchpad &lt;/think&gt;
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <!-- Secondary Insights & Article Intelligence Card -->
+        <div class="card-3d-tilt insights-halo-card">
+          <div class="card-specular-edge"></div>
+
+          <div class="insights-card-header">
+            <div class="insights-title-cluster">
+              <span class="insights-title">Synthesized Financial Context</span>
+              <span class="insights-sub mono">Scraped Telemetry & Catalyst Breakdown</span>
+            </div>
+            <button class="glass-copy-btn" id="btn-copy-result" title="Copy full debrief to clipboard">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span>Copy Signal</span>
+            </button>
+          </div>
+
+          <div class="insights-stack">
+            <!-- Article Title Display -->
+            <div class="insight-pod headline-pod">
+              <span class="pod-label mono">INGESTED HEADLINE</span>
+              <h3 class="pod-headline" id="article-title-display">Financial Market Story</h3>
+              <a href="#" target="_blank" rel="noopener noreferrer" class="pod-source-link mono" id="article-url-link">
+                <span>Source Article</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              </a>
+            </div>
+
+            <!-- Catalyst Reasoning -->
+            <div class="insight-pod reasoning-pod">
+              <span class="pod-label mono">CATALYST REASONING</span>
+              <blockquote class="pod-quote" id="verdict-reasoning">
+                Neural reasoning debrief will appear here.
+              </blockquote>
+            </div>
+
+            <!-- Scraped Article Snippet Preview -->
+            <div class="insight-pod snippet-pod" id="snippet-container">
+              <span class="pod-label mono">SCRAPED CONTENT PREVIEW</span>
+              <p class="pod-snippet-text" id="article-snippet-display">
+                Article snippet preview...
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Grounded Cosmic Footer -->
+  <footer class="spatial-footer">
+    <div class="footer-core-grid">
+      <div class="footer-left mono">
+        TradePulse Spatial Intelligence &bull; Powered by Qwen &amp; PyTorch CUDA
+      </div>
+      <div class="footer-right mono">
+        <span>FastAPI v0.141</span>
+        <span class="footer-bullet">&bull;</span>
+        <span>Hugging Face Hub</span>
+        <span class="footer-bullet">&bull;</span>
+        <span>Zero Latency Scraping</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/app.js?v=2.1"></script>
+</body>
+</html>

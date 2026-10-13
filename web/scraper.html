@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradePulse — Live Article Web Scraper & Reader | Neural Financial Terminal</title>
+  <meta name="description" content="Direct financial news article web scraper extracting headlines, real publication dates in IST, full body paragraphs, and neural sentiment intelligence.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/static/styles.css?v=2.1">
+  <style>
+    /* Specific Scraper Page Styles */
+    .scraper-container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 100px 24px 60px 24px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .scraper-header-section {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .scraper-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #10B981;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+
+    .scraper-main-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.6rem;
+      font-weight: 800;
+      color: #F8FAFC;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+
+    .scraper-subtext {
+      color: #94A3B8;
+      font-size: 1.05rem;
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* URL Input Stage */
+    .scraper-input-card {
+      background: #0B101E;
+      border: 1px solid #1E293B;
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .url-input-flex {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .url-text-field {
+      flex: 1;
+      height: 52px;
+      background: #070A12;
+      border: 1px solid #1E293B;
+      border-radius: 10px;
+      padding: 0 18px;
+      color: #F8FAFC;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .url-text-field:focus {
+      outline: none;
+      border-color: #10B981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .scrape-action-btn {
+      height: 52px;
+      padding: 0 26px;
+      background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      color: #FFFFFF;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .scrape-action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 28px rgba(16, 185, 129, 0.55);
+    }
+
+    .preset-links-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .preset-tag-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      color: #94A3B8;
+      background: #0D1322;
+      border: 1px solid #1E293B;
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .preset-tag-btn:hover {
+      color: #10B981;
+      border-color: #10B981;
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    /* Results Dual Stage */
+    .article-results-stage {
+      display: grid;
+      grid-template-columns: 1.8fr 1.2fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 960px) {
+      .article-results-stage {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left: Article Reader */
+    .article-reader-pane {
+      background: #0B101E;
+      border: 1px solid #162035;
+      border-radius: 14px;
+      padding: 32px 36px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .article-meta-badges {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .badge-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: #121A2C;
+      border: 1px solid #1E293B;
+      color: #94A3B8;
+    }
+
+    .badge-pill.accent {
+      color: #38BDF8;
+      border-color: rgba(56, 189, 248, 0.3);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .article-headline-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #F8FAFC;
+      line-height: 1.35;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .article-cover-img {
+      width: 100%;
+      max-height: 380px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #1E293B;
+      margin-bottom: 24px;
+    }
+
+    .article-summary-quote {
+      background: rgba(16, 185, 129, 0.06);
+      border-left: 3px solid #10B981;
+      padding: 16px 20px;
+      border-radius: 6px;
+      font-size: 0.96rem;
+      color: #E2E8F0;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .article-paragraph {
+      font-size: 0.98rem;
+      line-height: 1.8;
+      color: #CBD5E1;
+      margin-bottom: 18px;
+    }
+
+    /* Right: Intelligence Panel */
+    .article-intel-pane {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .intel-box {
+      background: #0B101E;
+      border: 1px solid #162035;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .intel-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #64748B;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .verdict-big-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+
+    .verdict-big-badge.bullish {
+      background: rgba(16, 185, 129, 0.14);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #10B981;
+    }
+
+    .verdict-big-badge.bearish {
+      background: rgba(239, 68, 68, 0.14);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #F87171;
+    }
+
+    .verdict-big-badge.neutral {
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #38BDF8;
+    }
+
+    .spread-track {
+      display: flex;
+      height: 8px;
+      border-radius: 999px;
+      background: #162035;
+      overflow: hidden;
+      margin: 12px 0 16px 0;
+    }
+
+    .reasoning-panel-content {
+      background: rgba(15, 23, 42, 0.8);
+      border-left: 3px solid #10B981;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      color: #CBD5E1;
+      line-height: 1.5;
+    }
+
+    /* Skeleton Loading State */
+    .loading-spinner-overlay {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .spinner-disc {
+      width: 48px;
+      height: 48px;
+      border: 3px solid rgba(16, 185, 129, 0.2);
+      border-top-color: #10B981;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="antigravity-body">
+  <canvas id="ambient-canvas" class="ambient-canvas" aria-hidden="true"></canvas>
+
+  <!-- Top Floating Navigation -->
+  <header class="floating-nav-wrapper">
+    <nav class="nav-glass-bar">
+      <div class="brand-cluster">
+        <a href="/" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;">
+          <div class="brand-orb-core">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+              <polyline points="16 7 22 7 22 13"></polyline>
+            </svg>
+          </div>
+          <div class="brand-meta">
+            <div class="brand-title">TRADEPULSE <span class="brand-version">v1.1</span></div>
+            <div class="brand-sub">Neural Financial Core</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <a href="/" class="glass-action-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          SENTIMENT TERMINAL
+        </a>
+        <a href="http://localhost:8501" target="_blank" class="glass-action-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+          STREAMLIT LIVE STREAM
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="scraper-container">
+    <!-- Header -->
+    <section class="scraper-header-section">
+      <div class="scraper-pill-badge">
+        <span>●</span> DEEP DOM ARTICLE EXTRACTION
+      </div>
+      <h1 class="scraper-main-title">Live Article Web Scraper & Reader</h1>
+      <p class="scraper-subtext">
+        Provide any financial article link to scrape its true publisher date in IST, clean editorial paragraphs, author byline, and execute instant neural sentiment reasoning.
+      </p>
+    </section>
+
+    <!-- URL Input HUD -->
+    <section class="scraper-input-card">
+      <div class="url-input-flex">
+        <input 
+          type="url" 
+          id="scraper-url-input" 
+          class="url-text-field"
+          placeholder="Paste news article URL (LiveMint, Moneycontrol, Economic Times, Bloomberg, Reuters)..."
+          value=""
+        >
+        <button id="btn-run-scraper" class="scrape-action-btn">
+          <span>⚡ Scrape & Read Article</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Loading Spinner -->
+    <div id="scraper-loading" class="loading-spinner-overlay">
+      <div class="spinner-disc"></div>
+      <div style="font-family: monospace; font-size: 0.9rem; color: #94A3B8;">
+        🤖 Scraping DOM metadata, clean article body, and executing Qwen3-0.6B neural sentiment...
+      </div>
+    </div>
+
+    <!-- Error Box -->
+    <div id="scraper-error" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 16px 20px; color: #FCA5A5; margin-bottom: 24px; font-family: monospace;"></div>
+
+    <!-- Results Stage -->
+    <section id="scraper-results" class="article-results-stage" style="display: none;">
+      <!-- Left: Full Article Reader -->
+      <article class="article-reader-pane">
+        <div class="article-meta-badges">
+          <span class="badge-pill" id="art-source">📰 Source</span>
+          <span class="badge-pill" id="art-author">✍️ Author</span>
+          <span class="badge-pill accent" id="art-date">🕒 Published (IST)</span>
+          <span class="badge-pill" id="art-words">📊 0 words</span>
+          <span class="badge-pill" id="art-readtime">⏱️ ~0 min</span>
+        </div>
+
+        <h1 class="article-headline-text" id="art-title">Article Headline</h1>
+
+        <img id="art-image" class="article-cover-img" style="display: none;" alt="Article Image">
+
+        <div id="art-lead" class="article-summary-quote" style="display: none;"></div>
+
+        <div id="art-paragraphs" class="article-body-content"></div>
+      </article>
+
+      <!-- Right: Intelligence & Signals -->
+      <aside class="article-intel-pane">
+        <!-- Verdict Box -->
+        <div class="intel-box">
+          <div class="intel-title">SYNTHESIZED MARKET VERDICT</div>
+          <div id="verdict-container" style="margin-bottom: 16px;">
+            <div id="verdict-badge" class="verdict-big-badge neutral">■ NEUTRAL · 90%</div>
+          </div>
+
+          <div class="intel-title">SOFTMAX PROBABILITY SPREAD</div>
+          <div style="display: flex; justify-content: space-between; font-family: monospace; font-size: 0.74rem;">
+            <span style="color: #10B981;">BULLISH: <strong id="val-bull">0%</strong></span>
+            <span style="color: #38BDF8;">NEUTRAL: <strong id="val-neut">0%</strong></span>
+            <span style="color: #EF4444;">BEARISH: <strong id="val-bear">0%</strong></span>
+          </div>
+          <div class="spread-track">
+            <div id="bar-bull" style="width: 0%; background: #10B981;"></div>
+            <div id="bar-neut" style="width: 100%; background: #38BDF8;"></div>
+            <div id="bar-bear" style="width: 0%; background: #EF4444;"></div>
+          </div>
+
+          <div class="intel-title">AI REASONING INSIGHT</div>
+          <div id="art-reasoning" class="reasoning-panel-content">
+            Analysis reasoning will appear here.
+          </div>
+        </div>
+
+        <!-- Telemetry & Source Details -->
+        <div class="intel-box">
+          <div class="intel-title">EXTRACTION AUDIT</div>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem; font-family: monospace; color: #CBD5E1;">
+            <div><strong>Publisher:</strong> <span id="tele-source">--</span></div>
+            <div><strong>Domain:</strong> <span id="tele-domain">--</span></div>
+            <div><strong>Published IST:</strong> <span id="tele-date" style="color: #38BDF8;">--</span></div>
+            <div><strong>Original URL:</strong> <a id="tele-link" href="#" target="_blank" style="color: #38BDF8; text-decoration: none;">Open Source Article ↗</a></div>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const urlInput = document.getElementById('scraper-url-input');
+    const runBtn = document.getElementById('btn-run-scraper');
+    const loadingElem = document.getElementById('scraper-loading');
+    const errorElem = document.getElementById('scraper-error');
+    const resultsStage = document.getElementById('scraper-results');
+
+    // Preset buttons
+    document.querySelectorAll('.preset-tag-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        urlInput.value = btn.getAttribute('data-url');
+        executeScrape();
+      });
+    });
+
+    runBtn.addEventListener('click', executeScrape);
+    urlInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') executeScrape();
+    });
+
+    async function executeScrape() {
+      const url = urlInput.value.trim();
+      if (!url || !url.startsWith('http')) {
+        showError('Please enter a valid HTTP/HTTPS article URL.');
+        return;
+      }
+
+      errorElem.style.display = 'none';
+      resultsStage.style.display = 'none';
+      loadingElem.style.display = 'block';
+
+      try {
+        const response = await fetch('/api/scraper/article', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+
+        const data = await response.json();
+        loadingElem.style.display = 'none';
+
+        if (!response.ok || data.status !== 'success') {
+          showError(data.detail || data.message || 'Failed to scrape article.');
+          return;
+        }
+
+        renderArticleData(data);
+      } catch (err) {
+        loadingElem.style.display = 'none';
+        showError('Network error connecting to TradePulse scraper API: ' + err.message);
+      }
+    }
+
+    function showError(msg) {
+      errorElem.textContent = '⚠️ ' + msg;
+      errorElem.style.display = 'block';
+    }
+
+    function renderArticleData(data) {
+      document.getElementById('art-title').textContent = data.title || 'Untitled Article';
+      document.getElementById('art-source').textContent = '📰 ' + (data.source || 'Publisher');
+      document.getElementById('art-author').textContent = '✍️ ' + (data.author || 'Editorial');
+      document.getElementById('art-date').textContent = '🕒 ' + (data.published_at_formatted || 'Date');
+      document.getElementById('art-words').textContent = '📊 ' + (data.word_count || 0) + ' words';
+      document.getElementById('art-readtime').textContent = '⏱️ ~' + (data.reading_time_min || 1) + ' min';
+
+      // Lead Image
+      const imgElem = document.getElementById('art-image');
+      if (data.lead_image && data.lead_image.startsWith('http')) {
+        imgElem.src = data.lead_image;
+        imgElem.style.display = 'block';
+      } else {
+        imgElem.style.display = 'none';
+      }
+
+      // Summary
+      const leadElem = document.getElementById('art-lead');
+      if (data.description) {
+        leadElem.innerHTML = '<strong>EXECUTIVE SUMMARY</strong><br>' + escapeHtml(data.description);
+        leadElem.style.display = 'block';
+      } else {
+        leadElem.style.display = 'none';
+      }
+
+      // Paragraphs
+      const parasElem = document.getElementById('art-paragraphs');
+      parasElem.innerHTML = '';
+      if (data.paragraphs && data.paragraphs.length > 0) {
+        data.paragraphs.forEach(p => {
+          const pTag = document.createElement('p');
+          pTag.className = 'article-paragraph';
+          pTag.textContent = p;
+          parasElem.appendChild(pTag);
+        });
+      } else {
+        parasElem.innerHTML = '<p class="article-paragraph">' + escapeHtml(data.full_text || 'No readable text.') + '</p>';
+      }
+
+      // Sentiment Card
+      const sent = data.sentiment || {};
+      const verdict = (sent.sentiment || 'NEUTRAL').toUpperCase();
+      const conf = Math.round((sent.confidence || 0.5) * 100);
+      const badgeElem = document.getElementById('verdict-badge');
+
+      if (verdict === 'BULLISH') {
+        badgeElem.className = 'verdict-big-badge bullish';
+        badgeElem.textContent = `▲ BULLISH · ${conf}%`;
+      } else if (verdict === 'BEARISH') {
+        badgeElem.className = 'verdict-big-badge bearish';
+        badgeElem.textContent = `▼ BEARISH · ${conf}%`;
+      } else {
+        badgeElem.className = 'verdict-big-badge neutral';
+        badgeElem.textContent = `■ NEUTRAL · ${conf}%`;
+      }
+
+      // Probabilities
+      const probs = sent.probabilities || {};
+      const bull = Math.round((probs.bullish || 0) * 100);
+      const bear = Math.round((probs.bearish || 0) * 100);
+      const neut = Math.round((probs.neutral || 0) * 100);
+
+      document.getElementById('val-bull').textContent = bull + '%';
+      document.getElementById('val-neut').textContent = neut + '%';
+      document.getElementById('val-bear').textContent = bear + '%';
+      document.getElementById('bar-bull').style.width = bull + '%';
+      document.getElementById('bar-neut').style.width = neut + '%';
+      document.getElementById('bar-bear').style.width = bear + '%';
+
+      document.getElementById('art-reasoning').textContent = sent.reasoning || 'No analysis available.';
+
+      // Telemetry
+      document.getElementById('tele-source').textContent = data.source || '--';
+      document.getElementById('tele-domain').textContent = data.domain || '--';
+      document.getElementById('tele-date').textContent = data.published_at_formatted || '--';
+      const linkElem = document.getElementById('tele-link');
+      linkElem.href = data.url;
+
+      resultsStage.style.display = 'grid';
+      resultsStage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+  </script>
+</body>
+</html>
