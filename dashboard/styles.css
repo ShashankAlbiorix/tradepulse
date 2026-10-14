@@ -79,18 +79,47 @@ header[data-testid="stHeader"] {
     margin-left: 2px;
 }
 
+@keyframes redTerminalBlink {
+    0%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 8px rgba(239, 68, 68, 0.55);
+        border-color: rgba(239, 68, 68, 0.7);
+    }
+    50% {
+        opacity: 0.35;
+        box-shadow: 0 0 2px rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.25);
+    }
+}
+
 .brand-terminal-pill {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
+    font-size: 0.58rem;
     font-weight: 700;
-    background: rgba(16, 185, 129, 0.12);
-    color: #10B981;
-    padding: 3px 7px;
-    border-radius: 5px;
-    letter-spacing: 0.8px;
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    margin-left: 6px;
+    background: rgba(239, 68, 68, 0.14);
+    color: #EF4444;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    border: 1px solid rgba(239, 68, 68, 0.45);
+    margin-left: 10px;
     line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    animation: redTerminalBlink 1.8s ease-in-out infinite;
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.35);
+    flex-shrink: 0;
+}
+
+.brand-terminal-pill::before {
+    content: '';
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: #EF4444;
+    box-shadow: 0 0 5px #EF4444;
 }
 
 /* Search Input Field */
@@ -284,10 +313,36 @@ button[kind="secondary"]:hover {
     transform: translateY(-1px);
 }
 
+.news-card-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0.5rem;
+    width: 100%;
+}
+
+.news-card-badges-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+}
+
+.news-card-time-right {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.news-card-headline-row {
+    margin-bottom: 0.35rem;
+}
+
 .news-card-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     gap: 16px;
     margin-bottom: 0.4rem;
 }
@@ -313,7 +368,7 @@ button[kind="secondary"]:hover {
 
 .news-card-badges {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: flex-end;
     align-items: center;
     gap: 6px;
@@ -328,7 +383,7 @@ button[kind="secondary"]:hover {
     margin-bottom: 0.5rem;
 }
 
-/* Unified Badge Design */
+/* Unified Badge Design — Strict Straight Line Alignment */
 .source-badge,
 .stock-badge,
 .sentiment-bullish,
@@ -339,15 +394,19 @@ button[kind="secondary"]:hover {
     align-items: center !important;
     justify-content: center !important;
     height: 24px !important;
+    min-height: 24px !important;
+    max-height: 24px !important;
     padding: 0 8px !important;
     border-radius: 5px !important;
     font-size: 0.72rem !important;
     font-weight: 700 !important;
     font-family: 'JetBrains Mono', monospace !important;
     letter-spacing: 0.03em !important;
-    line-height: 1 !important;
+    line-height: 22px !important;
     white-space: nowrap !important;
     box-sizing: border-box !important;
+    margin: 0 !important;
+    vertical-align: middle !important;
 }
 
 /* 1. Source Badge */

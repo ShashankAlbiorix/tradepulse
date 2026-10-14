@@ -120,7 +120,7 @@ def main():
 
     # 1. Top Header Bar with Search, Sort Toggle & Action Controls
     col_title, col_search, col_sort, col_scan = st.columns(
-        [2.2, 4.4, 1.6, 1.8],
+        [3.0, 4.0, 1.4, 1.6],
         gap="small"
     )
     
@@ -168,39 +168,16 @@ def main():
     if should_scan:
         run_ingestion_pipeline(workflow)
 
+    # 2. View Routing (Direct URL parameter access: ?view=scraper or ?page=scraper)
+    query_view = st.query_params.get("view", "") or st.query_params.get("page", "")
+    is_scraper_view = query_view in ["scraper", "reader"]
 
-    # 2. Prominent View Navigation Toolbar
-    query_view = st.query_params.get("view", "")
-    if "current_view" not in st.session_state:
-        st.session_state["current_view"] = "scraper" if query_view in ["scraper", "reader"] else "feed"
-
-    col_view1, col_view2, col_view_fill = st.columns([2.4, 3.2, 4.4], gap="small")
-    with col_view1:
-        if st.button(
-            "📡 Live Breaking News Stream",
-            use_container_width=True,
-            type="primary" if st.session_state["current_view"] == "feed" else "secondary",
-            key="btn_view_feed"
-        ):
-            st.session_state["current_view"] = "feed"
-            st.query_params["view"] = "feed"
-            st.rerun()
-
-    with col_view2:
-        if st.button(
-            "🌐 Deep Web Page Scraper & Reader",
-            use_container_width=True,
-            type="primary" if st.session_state["current_view"] == "scraper" else "secondary",
-            key="btn_view_scraper"
-        ):
-            st.session_state["current_view"] = "scraper"
-            st.query_params["view"] = "scraper"
-            st.rerun()
-
-    st.markdown("<div style='margin-bottom: 8px;'></div>", unsafe_allow_html=True)
-
-
-    if st.session_state["current_view"] == "scraper":
+    if is_scraper_view:
+        col_back, col_spacer = st.columns([2.6, 7.4])
+        with col_back:
+            if st.button("← Back to Live Breaking News", type="secondary", use_container_width=True):
+                st.query_params.clear()
+                st.rerun()
         # Full Webpage Scraper, DOM extractor, IST timestamps & Neural Intelligence
         render_article_scraper_view()
     else:

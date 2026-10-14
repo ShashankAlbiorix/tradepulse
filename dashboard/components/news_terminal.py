@@ -143,16 +143,18 @@ def render_news_terminal(articles: List[Dict[str, Any]], search_query: str = "",
 
         card_html = textwrap.dedent(f"""
 <div class="news-article-card">
-<div class="news-card-header">
-<div class="news-card-title-col">
-<a class="news-headline" href="{url}" target="_blank" rel="noopener noreferrer">{title} ↗</a>
-</div>
-<div class="news-card-badges">
+<div class="news-card-meta-row">
+<div class="news-card-badges-left">
 <span class="source-badge">{source}</span>
 <span class="{sent_class}">{sent_label}</span>
 {impact_badge_html}
+</div>
+<div class="news-card-time-right">
 {datetime_badge_html}
 </div>
+</div>
+<div class="news-card-headline-row">
+<a class="news-headline" href="{url}" target="_blank" rel="noopener noreferrer">{title} ↗</a>
 </div>
 <div class="news-summary">{summary}</div>
 {reasoning_html}
