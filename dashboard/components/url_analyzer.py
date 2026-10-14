@@ -88,37 +88,37 @@ def render_url_analyzer():
 
             import textwrap
 
-            # Render custom verdict card (Dark Terminal Theme)
+            # Render custom verdict card (Cyber-Institutional Glass Theme)
             engine_name = "Qwen-0.6B" if "NOSIBLE" in selected_model else "FinBERT"
             card_html = textwrap.dedent(f"""
-<div style="background: #0B101E; border: 1px solid #162035; border-radius: 10px; padding: 18px 20px; margin-top: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.35);">
-    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;">
+<div style="background: rgba(18, 26, 44, 0.75); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.10); border-radius: 12px; padding: 20px 22px; margin-top: 16px; box-shadow: 0 4px 20px -2px rgba(0,0,0,0.45), inset 0 1px 0 0 rgba(255,255,255,0.06);">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; flex-wrap: wrap; margin-bottom: 14px;">
         <div style="flex: 1; min-width: 250px;">
-            <span style="font-size: 0.68rem; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.8px; font-family: monospace;">SCRAPED HEADLINE</span>
-            <h4 style="margin: 4px 0 0 0; color: #F8FAFC; font-size: 1.12rem; line-height: 1.4; font-weight: 700;">
-                <a href="{url}" target="_blank" rel="noopener noreferrer" style="color: #F8FAFC; text-decoration: none;">{title} ↗</a>
+            <span style="font-size: 0.70rem; font-weight: 700; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.8px; font-family: 'JetBrains Mono', monospace;">SCRAPED HEADLINE</span>
+            <h4 style="margin: 4px 0 0 0; color: #FFFFFF; font-size: 1.15rem; line-height: 1.45; font-weight: 700;">
+                <a href="{url}" target="_blank" rel="noopener noreferrer" style="color: #FFFFFF; text-decoration: none;">{title} ↗</a>
             </h4>
         </div>
         <div>
-            <span class="{sent_class}" style="font-size: 0.85rem; padding: 4px 12px; height: 28px;">{sent_label}</span>
+            <span class="{sent_class}" style="font-size: 0.82rem; padding: 5px 14px; height: 30px;">{sent_label}</span>
         </div>
     </div>
 
-    <div style="margin: 14px 0 10px 0;">
-        <div style="display: flex; justify-content: space-between; font-size: 0.74rem; font-weight: 700; font-family: monospace; margin-bottom: 6px; color: #94A3B8;">
+    <div style="margin: 16px 0 12px 0;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.76rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; margin-bottom: 6px;">
             <span style="color: #10B981;">BULLISH: {bull_pct}%</span>
             <span style="color: #38BDF8;">NEUTRAL: {neut_pct}%</span>
             <span style="color: #EF4444;">BEARISH: {bear_pct}%</span>
         </div>
-        <div style="display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: #162035;">
-            <div style="width: {bull_pct}%; background: #10B981;"></div>
-            <div style="width: {neut_pct}%; background: #38BDF8;"></div>
-            <div style="width: {bear_pct}%; background: #EF4444;"></div>
+        <div style="display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: rgba(255, 255, 255, 0.08);">
+            <div style="width: {bull_pct}%; background: linear-gradient(90deg, #059669, #10B981);"></div>
+            <div style="width: {neut_pct}%; background: linear-gradient(90deg, #0284C7, #38BDF8);"></div>
+            <div style="width: {bear_pct}%; background: linear-gradient(90deg, #DC2626, #EF4444);"></div>
         </div>
     </div>
 
-    <div style="background: rgba(15, 23, 42, 0.8); border-left: 3px solid #10B981; padding: 10px 14px; border-radius: 4px; font-size: 0.84rem; color: #CBD5E1; margin-top: 12px; line-height: 1.5;">
-        💡 <strong style="color: #F1F5F9;">{engine_name} Verdict Reasoning:</strong> {reasoning}
+    <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); border-left: 3.5px solid #10B981; padding: 12px 16px; border-radius: 7px; font-size: 0.88rem; color: #E2E8F0; margin-top: 14px; line-height: 1.55;">
+        💡 <strong style="color: #FFFFFF;">{engine_name} Verdict Reasoning:</strong> {reasoning}
     </div>
 </div>
 """)

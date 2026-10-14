@@ -34,8 +34,10 @@ st.markdown("""
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #0B101E;
-    border: 1px solid #1E293B;
+    background: rgba(18, 26, 44, 0.75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.10);
     border-radius: 12px;
     padding: 16px 24px;
     margin-bottom: 20px;
@@ -50,13 +52,13 @@ st.markdown("""
 
 .scraper-hero-badge {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
+    font-size: 0.70rem;
     font-weight: 700;
-    color: #10B981;
-    background: rgba(16, 185, 129, 0.12);
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    padding: 3px 8px;
-    border-radius: 5px;
+    color: #34D399;
+    background: rgba(16, 185, 129, 0.14);
+    border: 1px solid rgba(16, 185, 129, 0.40);
+    padding: 4px 10px;
+    border-radius: 6px;
     letter-spacing: 0.8px;
 }
 
@@ -73,9 +75,9 @@ st.markdown("""
 .preset-chip {
     font-size: 0.76rem;
     font-family: 'JetBrains Mono', monospace;
-    color: #94A3B8;
-    background: #0D1322;
-    border: 1px solid #1E293B;
+    color: #CBD5E1;
+    background: rgba(18, 26, 44, 0.80);
+    border: 1px solid rgba(255, 255, 255, 0.10);
     border-radius: 6px;
     padding: 4px 10px;
     text-decoration: none;
@@ -83,19 +85,25 @@ st.markdown("""
     transition: all 0.15s ease;
 }
 
+.preset-chip:hover {
+    color: #FFFFFF;
+    border-color: rgba(56, 189, 248, 0.4);
+}
+
 /* Telemetry Ribbon */
 .telemetry-ribbon {
     display: flex;
     align-items: center;
     gap: 16px;
-    background: #0D1322;
-    border: 1px solid #162035;
-    border-radius: 8px;
+    background: rgba(18, 26, 44, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9px;
     padding: 10px 18px;
     margin-bottom: 20px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
-    color: #94A3B8;
+    font-size: 0.80rem;
+    color: #CBD5E1;
     flex-wrap: wrap;
 }
 
@@ -110,8 +118,10 @@ st.markdown("""
 
 /* Article Reader Card (Left Column) */
 .article-reader-container {
-    background: #0B101E;
-    border: 1px solid #162035;
+    background: rgba(18, 26, 44, 0.75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.09);
     border-radius: 12px;
     padding: 28px 32px;
     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.45);
@@ -130,27 +140,27 @@ st.markdown("""
     font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
     font-size: 1.75rem;
     font-weight: 800;
-    line-height: 1.3;
-    color: #F8FAFC;
+    line-height: 1.35;
+    color: #FFFFFF;
     letter-spacing: -0.02em;
     margin-bottom: 16px;
 }
 
 .article-lead-box {
-    background: rgba(16, 185, 129, 0.06);
-    border-left: 3px solid #10B981;
-    border-radius: 6px;
+    background: rgba(16, 185, 129, 0.10);
+    border-left: 3.5px solid #10B981;
+    border-radius: 7px;
     padding: 14px 18px;
     margin-bottom: 22px;
-    font-size: 0.95rem;
+    font-size: 0.96rem;
     line-height: 1.6;
     color: #E2E8F0;
     font-weight: 500;
 }
 
 .article-body-paragraph {
-    font-size: 0.96rem;
-    line-height: 1.75;
+    font-size: 0.98rem;
+    line-height: 1.8;
     color: #CBD5E1;
     margin-bottom: 16px;
     text-align: justify;
@@ -161,14 +171,16 @@ st.markdown("""
     max-height: 380px;
     object-fit: cover;
     border-radius: 10px;
-    border: 1px solid #1E293B;
+    border: 1px solid rgba(255, 255, 255, 0.12);
     margin-bottom: 22px;
 }
 
 /* Intelligence Panel (Right Column) */
 .intel-card {
-    background: #0B101E;
-    border: 1px solid #162035;
+    background: rgba(18, 26, 44, 0.75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.09);
     border-radius: 12px;
     padding: 22px 24px;
     margin-bottom: 18px;
@@ -177,9 +189,9 @@ st.markdown("""
 
 .intel-header-tag {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.70rem;
+    font-size: 0.72rem;
     font-weight: 700;
-    color: #64748B;
+    color: #94A3B8;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     margin-bottom: 10px;

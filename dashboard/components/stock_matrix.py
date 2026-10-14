@@ -52,25 +52,25 @@ def render_stock_matrix(verdicts_by_symbol: Dict[str, ShortTermVerdict]):
         with col:
             st.markdown(
                 f"""
-                <div class="stock-card">
+                <div style="background: rgba(18, 26, 44, 0.75); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; box-shadow: 0 4px 18px rgba(0,0,0,0.35);">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                         <div>
-                            <div class="stock-card-title">{entity.name}</div>
-                            <div class="stock-card-subtitle">{entity.symbol} • {entity.sector}</div>
+                            <div style="font-family: 'Space Grotesk', sans-serif; font-size: 1.10rem; font-weight: 700; color: #FFFFFF;">{entity.name}</div>
+                            <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; color: #94A3B8; margin-top: 2px;">{entity.symbol} • {entity.sector}</div>
                         </div>
                         <div>
-                            <span class="{badge_class}">{icon} {label}</span>
+                            <span class="{badge_class}" style="font-size: 0.76rem; padding: 4px 10px; border-radius: 6px;">{icon} {label}</span>
                         </div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; margin-top: 12px; font-size: 0.88rem; color: #1e293b;">
-                        <span>Confidence: <b>{confidence}%</b></span>
-                        <span>News Articles: <b>{article_count}</b></span>
+                    <div style="display: flex; justify-content: space-between; margin-top: 14px; font-size: 0.82rem; color: #CBD5E1; font-family: 'JetBrains Mono', monospace;">
+                        <span>Confidence: <b style="color: #FFFFFF;">{confidence}%</b></span>
+                        <span>News Stories: <b style="color: #38BDF8;">{article_count}</b></span>
                     </div>
-                    <div style="margin-top: 8px; font-size: 0.85rem; color: #475569; font-weight: 600;">
-                        🟢 {bullish:.0f}% Bullish &nbsp;|&nbsp; 🟡 {neutral:.0f}% Neutral &nbsp;|&nbsp; 🔴 {bearish:.0f}% Bearish
+                    <div style="margin-top: 10px; font-size: 0.80rem; color: #CBD5E1; font-weight: 600; font-family: 'JetBrains Mono', monospace;">
+                        <span style="color: #10B981;">🟢 {bullish:.0f}%</span> &nbsp;|&nbsp; <span style="color: #38BDF8;">🟡 {neutral:.0f}%</span> &nbsp;|&nbsp; <span style="color: #EF4444;">🔴 {bearish:.0f}%</span>
                     </div>
-                    <div style="margin-top: 10px; font-size: 0.85rem; color: #334155; border-top: 1px solid #e2e8f0; padding-top: 8px; line-height: 1.4;">
-                        ⚡ <b>Key Driver:</b> {driver}
+                    <div style="margin-top: 12px; font-size: 0.84rem; color: #E2E8F0; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 10px; line-height: 1.45;">
+                        ⚡ <strong style="color: #FFFFFF;">Key Driver:</strong> {driver}
                     </div>
                 </div>
                 """,
