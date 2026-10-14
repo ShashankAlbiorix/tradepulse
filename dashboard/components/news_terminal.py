@@ -27,7 +27,7 @@ def format_to_ist(date_str: str) -> str:
         return date_str[:19].replace("T", " ") + " IST"
 
 
-def render_news_terminal(articles: List[Dict[str, Any]], search_query: str = "", sort_order: str = "Newest First"):
+def render_news_terminal(articles: List[Dict[str, Any]], search_query: str = "", sort_order: str = "Newest First", last_sync_time: str = None):
     """
     Renders an interactive, real-time financial news stream terminal
     displaying stories fetched from news providers with all badge boxes
@@ -91,13 +91,13 @@ def render_news_terminal(articles: List[Dict[str, Any]], search_query: str = "",
         st.warning(f"No news articles matching '{search_query}'. Try searching for another keyword or clear the search bar.")
         return
 
-    # 5. Live Auto-Refresh Status Bar
-    current_ist_time = datetime.now(IST_TZ).strftime("%I:%M:%S %p IST")
+    # 5. Live Auto-Fetch Status Bar
+    current_ist_time = last_sync_time or datetime.now(IST_TZ).strftime("%I:%M:%S %p IST")
     status_bar_html = textwrap.dedent(f"""
     <div class="live-status-bar">
         <div class="live-status-left">
             <span class="live-pulse-dot"></span>
-            <span class="live-status-text"><strong>LIVE STREAM ACTIVE</strong> &bull; Auto-refreshing 5s &bull; Last check: <span class="live-time">{current_ist_time}</span></span>
+            <span class="live-status-text"><strong>LIVE NEWS STREAM</strong> &bull; Auto-fetch: <strong style="color: #10B981;">Every 1 min</strong> &bull; Last sync: <span class="live-time">{current_ist_time}</span></span>
         </div>
         <div class="live-status-right">
             <span class="live-count-badge">{len(filtered)} BREAKING STORIES</span>
@@ -105,6 +105,7 @@ def render_news_terminal(articles: List[Dict[str, Any]], search_query: str = "",
     </div>
     """)
     st.markdown(status_bar_html, unsafe_allow_html=True)
+
 
     # 6. Render High-Density Article Cards
     for a in filtered:

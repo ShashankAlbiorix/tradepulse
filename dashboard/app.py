@@ -1,8 +1,14 @@
 import os
 import sys
+import time
 import asyncio
+from datetime import datetime, timezone, timedelta
 from typing import Dict
 import streamlit as st
+
+IST_TZ = timezone(timedelta(hours=5, minutes=30))
+AUTO_FETCH_INTERVAL_SECONDS = 60  # 1 minute
+
 
 # Ensure repository root is on Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -57,32 +63,45 @@ def get_workflow():
     return NewsAnalysisWorkflow(db=get_db())
 
 
-def run_ingestion_pipeline(workflow, clear_db: bool = False):
+def run_ingestion_pipeline(workflow):
     """Execute news scraping and LangGraph pipeline, updating database with fresh news stories."""
     with st.spinner("🤖 Fetching live financial feeds and computing neural sentiment..."):
         try:
-            if clear_db:
-                db = get_db()
-                if hasattr(db, "clear_all"):
-                    db.clear_all()
-                if hasattr(workflow, "cache") and hasattr(workflow.cache, "clear"):
-                    workflow.cache.clear()
             final_state = asyncio.run(workflow.run())
             new_count = len(final_state.get("new_articles", []))
-            st.toast(f"✅ Ingested & analyzed {new_count} latest breaking news stories via FinBERT!", icon="📰")
+            st.session_state["last_auto_fetch_ts"] = time.time()
+            st.session_state["last_auto_fetch_time"] = datetime.now(IST_TZ).strftime("%I:%M:%S %p IST")
+            if new_count > 0:
+                st.toast(f"✅ Ingested & analyzed {new_count} latest breaking news stories via FinBERT!", icon="📰")
             st.rerun()
         except Exception as e:
             st.error(f"Execution failed: {str(e)}")
 
 
-@st.fragment(run_every=5)
-def render_live_news_stream(db, search_query: str, sort_order: str):
+@st.fragment(run_every=60)
+def render_live_news_stream(workflow, db, search_query: str, sort_order: str):
     """
-    Live streaming fragment that auto-refreshes every 5 seconds
-    to display newly ingested breaking stories smoothly.
+    Live streaming fragment that automatically fetches fresh news data
+    from providers every 1 minute without manual refresh.
     """
+    now = time.time()
+    last_fetch_ts = st.session_state.get("last_auto_fetch_ts", 0)
+
+    # Automatically fetch fresh live news every 1 minute (60 seconds)
+    if last_fetch_ts > 0 and (now - last_fetch_ts >= 58):
+        try:
+            final_state = asyncio.run(workflow.run())
+            new_count = len(final_state.get("new_articles", []))
+            st.session_state["last_auto_fetch_ts"] = now
+            st.session_state["last_auto_fetch_time"] = datetime.now(IST_TZ).strftime("%I:%M:%S %p IST")
+            if new_count > 0:
+                st.toast(f"⚡ Auto-fetched {new_count} fresh breaking news stories!", icon="📡")
+        except Exception as e:
+            pass
+
+    last_sync = st.session_state.get("last_auto_fetch_time")
     articles = db.get_recent_articles_with_sentiments(limit=150)
-    render_news_terminal(articles, search_query=search_query, sort_order=sort_order)
+    render_news_terminal(articles, search_query=search_query, sort_order=sort_order, last_sync_time=last_sync)
 
 
 def main():
@@ -92,14 +111,16 @@ def main():
     # Automatically fetch fresh news only if database is currently empty
     if "dashboard_loaded" not in st.session_state:
         st.session_state["dashboard_loaded"] = True
+        st.session_state["last_auto_fetch_ts"] = time.time()
+        st.session_state["last_auto_fetch_time"] = datetime.now(IST_TZ).strftime("%I:%M:%S %p IST")
         existing_articles = db.get_recent_articles_with_sentiments(limit=1)
         if not existing_articles:
-            run_ingestion_pipeline(workflow, clear_db=False)
+            run_ingestion_pipeline(workflow)
             return
 
     # 1. Top Header Bar with Search, Sort Toggle & Action Controls
-    col_title, col_search, col_sort, col_scan, col_refresh = st.columns(
-        [2.2, 4.0, 1.4, 1.1, 0.7],
+    col_title, col_search, col_sort, col_scan = st.columns(
+        [2.2, 4.4, 1.6, 1.8],
         gap="small"
     )
     
@@ -139,20 +160,14 @@ def main():
         )
         
     should_scan = False
-    clear_on_scan = False
     with col_scan:
-        if st.button("⚡ Scan", type="primary", use_container_width=True, help="Fetch fresh breaking news"):
+        if st.button("⚡ Fetch Now", type="primary", use_container_width=True, help="Immediately fetch and analyze latest news without waiting for 1-minute auto-fetch"):
             should_scan = True
-            clear_on_scan = False
-            
-    with col_refresh:
-        if st.button("🔄", use_container_width=True, help="Purge database cache & fetch latest live news"):
-            should_scan = True
-            clear_on_scan = True
 
     # Trigger fresh scan and scraping when requested
     if should_scan:
-        run_ingestion_pipeline(workflow, clear_db=clear_on_scan)
+        run_ingestion_pipeline(workflow)
+
 
     # 2. Prominent View Navigation Toolbar
     query_view = st.query_params.get("view", "")
@@ -191,8 +206,8 @@ def main():
     else:
         # Interactive Custom News URL Analyzer with FinBERT
         render_url_analyzer()
-        # Auto-refreshing Live News Feed (every 5 seconds)
-        render_live_news_stream(db, search_query=search_query, sort_order=sort_order)
+        # Auto-fetching Live News Feed (every 1 minute)
+        render_live_news_stream(workflow, db, search_query=search_query, sort_order=sort_order)
 
 
 
@@ -211,10 +226,9 @@ def main():
     - **Business Standard** (Companies & Markets)
     """)
     st.sidebar.markdown("---")
-    st.sidebar.info("⏱️ Auto-refresh: **Every 5 seconds**\n\nAI Sentiment: **FinBERT (ProsusAI/finbert)**\n\nDatabase: **DuckDB Analytical DB**")
-    if st.sidebar.button("🚀 Fetch Breaking News (Sidebar)", use_container_width=True):
-        run_ingestion_pipeline(workflow, clear_db=False)
+    st.sidebar.info("⏱️ Auto-fetch: **Every 1 minute**\n\nAI Sentiment: **FinBERT (ProsusAI/finbert)**\n\nDatabase: **DuckDB Analytical DB**")
     st.sidebar.caption("Financial News Intelligence Terminal • v1.0.0")
+
 
 
 if __name__ == "__main__":
