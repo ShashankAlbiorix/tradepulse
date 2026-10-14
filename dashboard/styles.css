@@ -57,36 +57,59 @@ header[data-testid="stHeader"] {
 }
 
 /* ==========================================================================
-   Market Indices Live Ticker Ribbon (Stock Trader Core Anchor)
+   Market Indices Live Ticker Ribbon (Marquee Effect)
    ========================================================================== */
 .market-ticker-ribbon {
     display: flex;
     align-items: center;
-    background: rgba(18, 26, 44, 0.65);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(18, 26, 44, 0.70);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.09);
     border-radius: 10px;
     padding: 6px 14px;
     margin-bottom: 12px;
-    gap: 12px;
-    overflow-x: auto;
-    scrollbar-width: none;
+    gap: 14px;
+    overflow: hidden !important;
+    position: relative;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
 }
 
-.market-ticker-ribbon::-webkit-scrollbar {
-    display: none;
+/* Gradient edge masks to smoothly fade items entering and exiting */
+.market-ticker-ribbon::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 235px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    background: linear-gradient(to right, #0E1525 0px, #0E1525 185px, transparent 235px);
+    pointer-events: none;
+    z-index: 9 !important;
+}
+
+.market-ticker-ribbon::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 60px;
+    background: linear-gradient(to right, transparent, rgba(14, 21, 37, 0.95));
+    pointer-events: none;
+    z-index: 8 !important;
 }
 
 .ticker-status-pill {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 3px 9px;
+    padding: 4px 11px;
     border-radius: 6px;
-    background: rgba(16, 185, 129, 0.14);
-    border: 1px solid rgba(16, 185, 129, 0.35);
+    background: rgba(14, 21, 37, 0.96) !important;
+    border: 1px solid rgba(16, 185, 129, 0.40) !important;
     color: #34D399;
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.68rem;
@@ -94,6 +117,9 @@ header[data-testid="stHeader"] {
     letter-spacing: 0.6px;
     white-space: nowrap;
     flex-shrink: 0;
+    position: relative;
+    z-index: 10 !important;
+    box-shadow: 10px 0 18px rgba(10, 14, 23, 0.95);
 }
 
 .ticker-beacon {
@@ -105,12 +131,33 @@ header[data-testid="stHeader"] {
     animation: livePulse 1.8s infinite;
 }
 
+/* Marquee scrolling track */
 .ticker-items-container {
     display: flex;
     align-items: center;
     gap: 16px;
     flex-wrap: nowrap;
     white-space: nowrap;
+    width: max-content;
+    will-change: transform;
+    animation: tickerMarquee 26s linear infinite;
+    position: relative;
+    z-index: 1 !important;
+}
+
+/* Pause marquee on hover so trader can read or inspect indices closely */
+.market-ticker-ribbon:hover .ticker-items-container {
+    animation-play-state: paused;
+    cursor: pointer;
+}
+
+@keyframes tickerMarquee {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    100% {
+        transform: translate3d(-100%, 0, 0);
+    }
 }
 
 .ticker-item {
@@ -120,10 +167,17 @@ header[data-testid="stHeader"] {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.76rem;
     color: #E2E8F0;
-    padding: 2px 8px;
-    border-radius: 5px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 3px 9px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: all 0.15s ease;
+}
+
+.ticker-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(56, 189, 248, 0.35);
+    transform: translateY(-1px);
 }
 
 .ticker-sym {
