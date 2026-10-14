@@ -93,16 +93,20 @@ def test_category_filtering():
 
 
 def test_market_breadth_aggregation():
-    """Test calculation of advances and declines."""
+    """Test calculation of advances, declines, and A/D ratio."""
     scraper = NSEIndicesScraper(ttl_seconds=60)
     scraper._cache = [
-        {"index": "NIFTY 50", "category": "BROAD MARKET", "advances": 30, "declines": 20, "unchanged": 0},
-        {"index": "NIFTY 500", "category": "BROAD MARKET", "advances": 270, "declines": 230, "unchanged": 0},
+        {"index": "NIFTY 50", "category": "INDICES ELIGIBLE IN DERIVATIVES", "advances": 30, "declines": 20, "unchanged": 0},
+        {"index": "NIFTY 500", "category": "BROAD MARKET INDICES", "advances": 270, "declines": 230, "unchanged": 0},
     ]
     breadth = scraper.get_market_breadth()
-    assert breadth["advances"] == 300
-    assert breadth["declines"] == 250
-    assert breadth["adv_pct"] > 50
+    assert breadth["n50_adv"] == 30
+    assert breadth["n50_dec"] == 20
+    assert breadth["n50_ratio"] == 1.5
+    assert breadth["n500_adv"] == 270
+    assert breadth["n500_dec"] == 230
+    assert breadth["n500_ratio"] == 1.17
+    assert "BULLISH" in breadth["sentiment"]
 
 
 def test_singleton_and_background_worker():

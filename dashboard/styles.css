@@ -57,6 +57,121 @@ header[data-testid="stHeader"] {
 }
 
 /* ==========================================================================
+/* ==========================================================================
+   Market Advance / Decline Ratio Header Strip (Top of Ticker Ribbon)
+   ========================================================================== */
+.market-breadth-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(14, 21, 37, 0.90);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px 10px 0 0;
+    padding: 7px 14px;
+    gap: 12px;
+    flex-wrap: wrap;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.30);
+}
+
+.breadth-left-block {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.80rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: 0.5px;
+}
+
+.breadth-badge-beacon {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #10B981;
+    box-shadow: 0 0 8px #10B981;
+    animation: livePulse 2s infinite;
+}
+
+.breadth-stats-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+}
+
+.breadth-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(10, 14, 23, 0.70);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    padding: 3px 8px;
+}
+
+.chip-title {
+    color: #94A3B8;
+    font-weight: 600;
+    font-size: 0.66rem;
+}
+
+.chip-adv {
+    color: #34D399;
+    font-weight: 700;
+}
+
+.chip-dec {
+    color: #F87171;
+    font-weight: 700;
+}
+
+.chip-ratio {
+    color: #38BDF8;
+    font-weight: 700;
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    padding: 1px 5px;
+    border-radius: 4px;
+}
+
+.breadth-micro-bar {
+    width: 44px;
+    height: 5px;
+    border-radius: 3px;
+    background: #1E293B;
+    display: inline-flex;
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.fill-adv {
+    background: #10B981;
+    height: 100%;
+}
+
+.fill-dec {
+    background: #EF4444;
+    height: 100%;
+}
+
+.breadth-time-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.70rem;
+    font-weight: 600;
+    color: #94A3B8;
+    background: rgba(30, 41, 59, 0.6);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ==========================================================================
    Market Indices Live Ticker Ribbon (Marquee Effect)
    ========================================================================== */
 .market-ticker-ribbon {
@@ -66,9 +181,10 @@ header[data-testid="stHeader"] {
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid rgba(255, 255, 255, 0.09);
-    border-radius: 10px;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
     padding: 6px 14px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     gap: 14px;
     overflow: hidden !important;
     position: relative;
@@ -82,10 +198,9 @@ header[data-testid="stHeader"] {
     left: 0;
     top: 0;
     bottom: 0;
-    width: 235px;
-    border-top-left-radius: 10px;
+    width: 250px;
     border-bottom-left-radius: 10px;
-    background: linear-gradient(to right, #0E1525 0px, #0E1525 185px, transparent 235px);
+    background: linear-gradient(to right, #0E1525 0px, #0E1525 200px, transparent 250px);
     pointer-events: none;
     z-index: 9 !important;
 }
@@ -140,7 +255,7 @@ header[data-testid="stHeader"] {
     white-space: nowrap;
     width: max-content;
     will-change: transform;
-    animation: tickerMarquee 38s linear infinite;
+    animation: tickerMarquee 150s linear infinite;
     position: relative;
     z-index: 1 !important;
 }

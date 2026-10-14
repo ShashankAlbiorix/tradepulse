@@ -16,6 +16,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 import importlib
 import src.ingestion.web_scraper as web_scraper_mod
 import src.ingestion.rss_fetcher as rss_fetcher_mod
+import src.ingestion.nse_indices_scraper as nse_scraper_mod
 import src.agent.workflow as workflow_mod
 import dashboard.components.news_terminal as news_terminal_module
 import dashboard.components.url_analyzer as url_analyzer_module
@@ -25,6 +26,7 @@ import dashboard.components.nse_indices_view as nse_indices_view_module
 importlib.reload(web_scraper_mod)
 importlib.reload(rss_fetcher_mod)
 importlib.reload(workflow_mod)
+importlib.reload(nse_scraper_mod)
 importlib.reload(news_terminal_module)
 importlib.reload(url_analyzer_module)
 importlib.reload(article_scraper_module)

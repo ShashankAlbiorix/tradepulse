@@ -193,14 +193,13 @@ class NSEIndicesScraper:
             # Return fallback cached data if live fetch failed
             return self._cache
 
-    def get_marquee_indices(self) -> List[Dict[str, Any]]:
+    def get_marquee_indices(self, include_all: bool = True) -> List[Dict[str, Any]]:
         """
-        Returns high-priority benchmark & sectoral indices configured
-        specifically for the Market Pulse continuous marquee ribbon.
+        Returns all scraped NSE indices configured for the continuous marquee tape.
+        Priority benchmark indices appear first, followed by all remaining indices.
         """
         all_indices = self.scrape_live_indices()
         if not all_indices:
-            # Safe default fallback if network unreachable
             return [
                 {"sym": "NIFTY 50", "val": "22,622.70", "chg": "-99.25 (-0.44%)", "up": False},
                 {"sym": "NIFTY NEXT 50", "val": "68,999.30", "chg": "+71.35 (+0.10%)", "up": True},
@@ -212,26 +211,39 @@ class NSEIndicesScraper:
                 {"sym": "INDIA VIX", "val": "13.25", "chg": "-0.29 (-2.14%)", "up": False},
             ]
 
-        lookup = {i["index"].upper(): i for i in all_indices}
+        lookup = {i["index"].strip().upper(): i for i in all_indices}
 
-        target_symbols = [
+        priority_order = [
             ("NIFTY 50", "NIFTY 50"),
             ("NIFTY NEXT 50", "NIFTY NEXT 50"),
             ("NIFTY BANK", "NIFTY BANK"),
             ("NIFTY FINANCIAL SERVICES", "NIFTY FIN SERVICE"),
             ("NIFTY MIDCAP SELECT", "NIFTY MID SELECT"),
             ("NIFTY 100", "NIFTY 100"),
+            ("NIFTY 200", "NIFTY 200"),
             ("NIFTY 500", "NIFTY 500"),
+            ("NIFTY MIDCAP 50", "NIFTY MID 50"),
+            ("NIFTY SMALLCAP 50", "NIFTY SMALL 50"),
             ("NIFTY IT", "NIFTY IT"),
             ("NIFTY AUTO", "NIFTY AUTO"),
             ("NIFTY PHARMA", "NIFTY PHARMA"),
-            ("NIFTY METAL", "NIFTY METAL"),
             ("NIFTY FMCG", "NIFTY FMCG"),
+            ("NIFTY METAL", "NIFTY METAL"),
+            ("NIFTY REALTY", "NIFTY REALTY"),
+            ("NIFTY ENERGY", "NIFTY ENERGY"),
+            ("NIFTY MEDIA", "NIFTY MEDIA"),
+            ("NIFTY PSU BANK", "NIFTY PSU BANK"),
+            ("NIFTY PVT BANK", "NIFTY PVT BANK"),
+            ("NIFTY COMMODITIES", "NIFTY COMMODITIES"),
+            ("NIFTY INFRA", "NIFTY INFRA"),
             ("INDIA VIX", "INDIA VIX"),
         ]
 
         result = []
-        for full_name, short_label in target_symbols:
+        seen = set()
+
+        # 1. Add priority benchmark symbols first
+        for full_name, short_label in priority_order:
             item = lookup.get(full_name.upper())
             if item:
                 last_val = f"{item['last']:,.2f}"
@@ -246,27 +258,83 @@ class NSEIndicesScraper:
                     "up": var >= 0,
                     "raw_pct": pct
                 })
+                seen.add(full_name.upper())
 
-        return result if result else all_indices[:10]
+        # 2. Append all remaining 130+ indices if include_all is True
+        if include_all:
+            for item in all_indices:
+                raw_name = item.get("index", "").strip()
+                if not raw_name or raw_name.upper() in seen:
+                    continue
+                seen.add(raw_name.upper())
+                last_val = f"{item['last']:,.2f}"
+                pct = item.get("percent_change", 0.0)
+                var = item.get("variation", 0.0)
+                sign = "+" if var >= 0 else ""
+                chg_str = f"{sign}{var:,.2f} ({sign}{pct:.2f}%)"
+                result.append({
+                    "sym": raw_name,
+                    "val": last_val,
+                    "chg": chg_str,
+                    "up": var >= 0,
+                    "raw_pct": pct
+                })
+
+        return result
 
     def get_market_breadth(self) -> Dict[str, Any]:
-        """Aggregate advances, declines, and overall market momentum across all indices."""
+        """Aggregate advances, declines, and A/D ratio across NIFTY 500 and NIFTY 50."""
         all_indices = self.scrape_live_indices()
         if not all_indices:
-            return {"advances": 0, "declines": 0, "unchanged": 0, "adv_pct": 50, "dec_pct": 50}
+            return {
+                "n500_adv": 240, "n500_dec": 260, "n500_ratio": 0.92, "n500_adv_pct": 48.0, "n500_dec_pct": 52.0,
+                "n50_adv": 16, "n50_dec": 34, "n50_ratio": 0.47, "n50_adv_pct": 32.0, "n50_dec_pct": 68.0,
+                "sentiment": "BEARISH BIAS", "timestamp": self._last_market_timestamp, "total_indices": 139
+            }
 
-        total_adv = sum(i.get("advances", 0) for i in all_indices if i.get("category") == "BROAD MARKET")
-        total_dec = sum(i.get("declines", 0) for i in all_indices if i.get("category") == "BROAD MARKET")
-        total_unc = sum(i.get("unchanged", 0) for i in all_indices if i.get("category") == "BROAD MARKET")
-        sum_total = total_adv + total_dec + total_unc or 1
+        lookup = {i["index"].strip().upper(): i for i in all_indices}
+        nifty50 = lookup.get("NIFTY 50", {})
+        nifty500 = lookup.get("NIFTY 500", {})
+
+        n50_adv = nifty50.get("advances", 16)
+        n50_dec = nifty50.get("declines", 34)
+        n50_tot = (n50_adv + n50_dec) or 50
+        n50_ratio = round(n50_adv / max(n50_dec, 1), 2)
+        n50_adv_pct = round((n50_adv / n50_tot) * 100, 1)
+        n50_dec_pct = round((n50_dec / n50_tot) * 100, 1)
+
+        n500_adv = nifty500.get("advances", 240)
+        n500_dec = nifty500.get("declines", 260)
+        n500_tot = (n500_adv + n500_dec) or 500
+        n500_ratio = round(n500_adv / max(n500_dec, 1), 2)
+        n500_adv_pct = round((n500_adv / n500_tot) * 100, 1)
+        n500_dec_pct = round((n500_dec / n500_tot) * 100, 1)
+
+        if n500_ratio > 1.15:
+            sentiment = "BULLISH DOMINANCE"
+        elif n500_ratio > 1.02:
+            sentiment = "MILD BULLISH BIAS"
+        elif n500_ratio < 0.85:
+            sentiment = "BEARISH DOMINANCE"
+        elif n500_ratio < 0.98:
+            sentiment = "MILD BEARISH BIAS"
+        else:
+            sentiment = "BALANCED / NEUTRAL"
 
         return {
-            "advances": total_adv,
-            "declines": total_dec,
-            "unchanged": total_unc,
-            "adv_pct": int((total_adv / sum_total) * 100),
-            "dec_pct": int((total_dec / sum_total) * 100),
-            "timestamp": self._last_market_timestamp
+            "n500_adv": n500_adv,
+            "n500_dec": n500_dec,
+            "n500_ratio": n500_ratio,
+            "n500_adv_pct": n500_adv_pct,
+            "n500_dec_pct": n500_dec_pct,
+            "n50_adv": n50_adv,
+            "n50_dec": n50_dec,
+            "n50_ratio": n50_ratio,
+            "n50_adv_pct": n50_adv_pct,
+            "n50_dec_pct": n50_dec_pct,
+            "sentiment": sentiment,
+            "timestamp": self._last_market_timestamp,
+            "total_indices": len(all_indices)
         }
 
     def get_categories(self) -> List[str]:

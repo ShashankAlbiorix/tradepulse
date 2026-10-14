@@ -35,7 +35,7 @@ def format_to_ist(date_str: str) -> str:
         return date_str[:19].replace("T", " ") + " IST"
 
 
-from dashboard.components.nse_indices_view import render_market_ticker, render_nse_indices_explorer
+from dashboard.components.nse_indices_view import render_market_ticker
 
 
 def get_source_badge_class(source_name: str) -> str:
@@ -64,11 +64,8 @@ def render_news_terminal(articles: List[Dict[str, Any]], search_query: str = "",
         st.info("💡 No news articles in database. Click **'⚡ Fetch Now'** at the top right to fetch and analyze live feeds across all news providers.")
         return
 
-    # 1. Top Market Indices Ticker Ribbon (Live continuous NSE scraper data)
+    # 1. Market Breadth Advance/Decline Strip & Live Ticker Marquee (All 139 Indices)
     render_market_ticker()
-
-    # 2. Live NSE Market Indices Explorer (All 139 indices from nseindia.com)
-    render_nse_indices_explorer()
 
     # 2. Boilerplate / Junk headline filter
     junk_headers = [
