@@ -5,7 +5,10 @@ import re
 from datetime import datetime, timezone, timedelta
 from typing import Optional, List
 import httpx
-import trafilatura
+try:
+    import trafilatura
+except ImportError:
+    trafilatura = None
 from bs4 import BeautifulSoup
 from dateutil import parser as date_parser
 
@@ -180,16 +183,20 @@ class WebScraper:
 
                 html_content = response.text
 
-                # 1. Primary extractor: Trafilatura
-                extracted_text = trafilatura.extract(
-                    html_content,
-                    include_comments=False,
-                    include_tables=True,
-                    no_fallback=False
-                )
+                # 1. Primary extractor: Trafilatura (if available)
+                if trafilatura is not None:
+                    try:
+                        extracted_text = trafilatura.extract(
+                            html_content,
+                            include_comments=False,
+                            include_tables=True,
+                            no_fallback=False
+                        )
+                        if extracted_text and len(extracted_text.strip()) > 80:
+                            return extracted_text.strip()
+                    except Exception as te:
+                        logger.warning(f"Trafilatura extraction failed, falling back to BeautifulSoup: {te}")
 
-                if extracted_text and len(extracted_text.strip()) > 80:
-                    return extracted_text.strip()
 
                 # 2. Secondary fallback: BeautifulSoup paragraph aggregation
                 soup = BeautifulSoup(html_content, "html.parser")

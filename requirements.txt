@@ -7,6 +7,7 @@ torch>=2.2.0
 transformers>=4.40.0
 
 # Data Ingestion & Web Scraping
+trafilatura>=1.8.0
 feedparser>=6.0.10
 beautifulsoup4>=4.12.0
 requests>=2.31.0
@@ -18,6 +19,7 @@ pydantic>=2.7.0
 pydantic-settings>=2.2.0
 duckdb>=0.10.0
 python-dotenv>=1.0.1
+pandas>=2.0.0
 
 # Presentation & UI
 streamlit>=1.35.0
