@@ -20,6 +20,7 @@ import src.agent.workflow as workflow_mod
 import dashboard.components.news_terminal as news_terminal_module
 import dashboard.components.url_analyzer as url_analyzer_module
 import dashboard.components.article_scraper_view as article_scraper_module
+import dashboard.components.nse_indices_view as nse_indices_view_module
 
 importlib.reload(web_scraper_mod)
 importlib.reload(rss_fetcher_mod)
@@ -27,6 +28,7 @@ importlib.reload(workflow_mod)
 importlib.reload(news_terminal_module)
 importlib.reload(url_analyzer_module)
 importlib.reload(article_scraper_module)
+importlib.reload(nse_indices_view_module)
 
 NewsAnalysisWorkflow = workflow_mod.NewsAnalysisWorkflow
 from src.storage.database import DatabaseManager

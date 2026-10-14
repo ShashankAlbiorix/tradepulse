@@ -162,7 +162,7 @@ class RSSFetcher(BaseNewsFetcher):
             logger.error(f"Exception fetching RSS feed {source_name}: {e}")
             return []
 
-    async def fetch_articles(self) -> List[NewsArticle]:
+    async def fetch_articles(self, limit: Optional[int] = None) -> List[NewsArticle]:
         """
         Concurrently poll all configured financial RSS feeds.
         """
@@ -180,4 +180,6 @@ class RSSFetcher(BaseNewsFetcher):
 
         # Sort newest first by default
         all_articles.sort(key=lambda x: x.published_at, reverse=True)
+        if limit:
+            all_articles = all_articles[:limit]
         return all_articles

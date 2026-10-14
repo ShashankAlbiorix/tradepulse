@@ -140,7 +140,7 @@ header[data-testid="stHeader"] {
     white-space: nowrap;
     width: max-content;
     will-change: transform;
-    animation: tickerMarquee 26s linear infinite;
+    animation: tickerMarquee 38s linear infinite;
     position: relative;
     z-index: 1 !important;
 }
@@ -156,7 +156,7 @@ header[data-testid="stHeader"] {
         transform: translate3d(0, 0, 0);
     }
     100% {
-        transform: translate3d(-100%, 0, 0);
+        transform: translate3d(-50%, 0, 0);
     }
 }
 
@@ -923,3 +923,130 @@ div[data-baseweb="tab-highlight"] {
 ::-webkit-scrollbar-thumb:hover {
     background: #334155;
 }
+
+/* ==========================================================================
+   NSE Live Indices Table & Category Explorer (Institutional Terminal Design)
+   ========================================================================== */
+.nse-explorer-box {
+    background: rgba(18, 26, 44, 0.75) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.09) !important;
+    border-radius: 12px !important;
+    padding: 1rem 1.25rem !important;
+    margin-bottom: 1.2rem !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35) !important;
+}
+
+.nse-meta-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nse-meta-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nse-meta-stats {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem;
+}
+
+.nse-table-wrapper {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(10, 14, 23, 0.70);
+    max-height: 480px;
+    overflow-y: auto;
+}
+
+.nse-indices-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: #E2E8F0;
+}
+
+.nse-indices-table thead th {
+    position: sticky;
+    top: 0;
+    background: #141D30;
+    color: #94A3B8;
+    text-align: right;
+    padding: 9px 10px;
+    font-weight: 700;
+    font-size: 0.69rem;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    white-space: nowrap;
+    z-index: 5;
+}
+
+.nse-indices-table thead th:first-child {
+    text-align: left;
+}
+
+.nse-indices-table tbody td {
+    padding: 7px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    text-align: right;
+    white-space: nowrap;
+}
+
+.nse-indices-table tbody td:first-child {
+    text-align: left;
+    font-weight: 700;
+    color: #FFFFFF;
+}
+
+.nse-indices-table tbody tr:hover {
+    background: rgba(56, 189, 248, 0.08);
+}
+
+.val-up {
+    color: #34D399;
+    font-weight: 700;
+}
+
+.val-down {
+    color: #F87171;
+    font-weight: 700;
+}
+
+.badge-up {
+    background: rgba(16, 185, 129, 0.14);
+    color: #34D399;
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    font-weight: 700;
+    display: inline-block;
+}
+
+.badge-down {
+    background: rgba(239, 68, 68, 0.14);
+    color: #F87171;
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    font-weight: 700;
+    display: inline-block;
+}
+

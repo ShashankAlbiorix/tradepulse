@@ -35,40 +35,7 @@ def format_to_ist(date_str: str) -> str:
         return date_str[:19].replace("T", " ") + " IST"
 
 
-def render_market_ticker():
-    """
-    Renders an institutional stock market ticker ribbon with live Indian benchmarks,
-    currencies, and commodities anchoring the interface for active traders.
-    """
-    indices = [
-        {"sym": "NIFTY 50", "val": "25,124.60", "chg": "+105.40 (+0.42%)", "up": True},
-        {"sym": "SENSEX", "val": "81,973.05", "chg": "+312.20 (+0.38%)", "up": True},
-        {"sym": "BANK NIFTY", "val": "51,840.20", "chg": "+334.80 (+0.65%)", "up": True},
-        {"sym": "FINNIFTY", "val": "23,912.40", "chg": "+74.50 (+0.31%)", "up": True},
-        {"sym": "INDIA VIX", "val": "13.25", "chg": "-0.29 (-2.14%)", "up": False},
-        {"sym": "BRENT CRUDE", "val": "$77.40", "chg": "+0.14 (+0.18%)", "up": True},
-        {"sym": "USD/INR", "val": "₹83.92", "chg": "-0.04 (-0.05%)", "up": False},
-        {"sym": "GOLD (MCX)", "val": "₹76,420", "chg": "+190 (+0.25%)", "up": True},
-    ]
-
-    items_html = ""
-    for idx in indices:
-        chg_class = "ticker-up" if idx["up"] else "ticker-down"
-        arrow = "▲" if idx["up"] else "▼"
-        items_html += f'<div class="ticker-item"><span class="ticker-sym">{idx["sym"]}</span><span class="ticker-val">{idx["val"]}</span><span class="{chg_class}">{arrow} {idx["chg"]}</span></div>'
-
-    ticker_ribbon_html = f"""
-<div class="market-ticker-ribbon">
-<div class="ticker-status-pill">
-<span class="ticker-beacon"></span>
-MARKET PULSE · NSE / BSE
-</div>
-<div class="ticker-items-container">
-{items_html}
-</div>
-</div>
-"""
-    st.markdown(clean_html(ticker_ribbon_html), unsafe_allow_html=True)
+from dashboard.components.nse_indices_view import render_market_ticker, render_nse_indices_explorer
 
 
 def get_source_badge_class(source_name: str) -> str:
@@ -97,8 +64,11 @@ def render_news_terminal(articles: List[Dict[str, Any]], search_query: str = "",
         st.info("💡 No news articles in database. Click **'⚡ Fetch Now'** at the top right to fetch and analyze live feeds across all news providers.")
         return
 
-    # 1. Top Market Indices Ticker Ribbon
+    # 1. Top Market Indices Ticker Ribbon (Live continuous NSE scraper data)
     render_market_ticker()
+
+    # 2. Live NSE Market Indices Explorer (All 139 indices from nseindia.com)
+    render_nse_indices_explorer()
 
     # 2. Boilerplate / Junk headline filter
     junk_headers = [
