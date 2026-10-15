@@ -255,7 +255,7 @@ header[data-testid="stHeader"] {
     white-space: nowrap;
     width: max-content;
     will-change: transform;
-    animation: tickerMarquee 150s linear infinite;
+    animation: tickerMarquee 360s linear infinite;
     position: relative;
     z-index: 1 !important;
 }

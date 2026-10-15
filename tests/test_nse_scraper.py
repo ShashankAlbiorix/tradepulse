@@ -1,3 +1,4 @@
+import time
 import pytest
 from unittest.mock import MagicMock, patch
 from src.ingestion.nse_indices_scraper import NSEIndicesScraper, NSEIndexData, get_nse_indices_scraper
@@ -29,6 +30,7 @@ def test_nse_index_data_model():
 def test_scraper_marquee_indices():
     """Test formatting of priority marquee indices."""
     scraper = NSEIndicesScraper(ttl_seconds=60)
+    scraper._last_fetch_ts = time.time()
     # Mock cache data
     scraper._cache = [
         {
@@ -73,6 +75,7 @@ def test_scraper_marquee_indices():
 def test_category_filtering():
     """Test category extraction and filtering."""
     scraper = NSEIndicesScraper(ttl_seconds=60)
+    scraper._last_fetch_ts = time.time()
     scraper._cache = [
         {"index": "NIFTY 50", "category": "INDICES ELIGIBLE IN DERIVATIVES", "last": 22622.7},
         {"index": "NIFTY 100", "category": "BROAD MARKET INDICES", "last": 23500.0},
@@ -95,6 +98,7 @@ def test_category_filtering():
 def test_market_breadth_aggregation():
     """Test calculation of advances, declines, and A/D ratio."""
     scraper = NSEIndicesScraper(ttl_seconds=60)
+    scraper._last_fetch_ts = time.time()
     scraper._cache = [
         {"index": "NIFTY 50", "category": "INDICES ELIGIBLE IN DERIVATIVES", "advances": 30, "declines": 20, "unchanged": 0},
         {"index": "NIFTY 500", "category": "BROAD MARKET INDICES", "advances": 270, "declines": 230, "unchanged": 0},
