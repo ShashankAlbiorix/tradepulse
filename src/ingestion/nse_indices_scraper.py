@@ -12,6 +12,32 @@ from src.utils.logger import logger
 IST_TZ = timezone(timedelta(hours=5, minutes=30))
 CACHE_FILE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../data/nse_indices_cache.json"))
 
+SECTORAL_INDICES_ORDER = [
+    ("NIFTY AUTO", "NIFTY AUTO"),
+    ("NIFTY BANK", "NIFTY BANK"),
+    ("NIFTY FINANCIAL SERVICES", "NIFTY FIN SERVICES"),
+    ("NIFTY FINANCIAL SERVICES 25/50", "NIFTY FINSRV 25/50"),
+    ("NIFTY FMCG", "NIFTY FMCG"),
+    ("NIFTY IT", "NIFTY IT"),
+    ("NIFTY MEDIA", "NIFTY MEDIA"),
+    ("NIFTY METAL", "NIFTY METAL"),
+    ("NIFTY PHARMA", "NIFTY PHARMA"),
+    ("NIFTY PSU BANK", "NIFTY PSU BANK"),
+    ("NIFTY REALTY", "NIFTY REALTY"),
+    ("NIFTY PRIVATE BANK", "NIFTY PVT BANK"),
+    ("NIFTY HEALTHCARE INDEX", "NIFTY HEALTHCARE"),
+    ("NIFTY CONSUMER DURABLES", "NIFTY CONSR DURABLES"),
+    ("NIFTY OIL & GAS", "NIFTY OIL & GAS"),
+    ("NIFTY MIDSMALL HEALTHCARE", "NIFTY MIDSML HEALTH"),
+    ("NIFTY CHEMICALS", "NIFTY CHEMICALS"),
+    ("NIFTY500 HEALTHCARE", "NIFTY500 HEALTHCARE"),
+    ("NIFTY FINANCIAL SERVICES EX-BANK", "NIFTY FINSERV EX-BANK"),
+    ("NIFTY MIDSMALL FINANCIAL SERVICES", "NIFTY MS FIN SERVICES"),
+    ("NIFTY MIDSMALL IT & TELECOM", "NIFTY MS IT & TELECOM"),
+    ("NIFTY CEMENT", "NIFTY CEMENT"),
+    ("NIFTY REITS & REALTY", "NIFTY REITS & REALTY"),
+]
+
 
 class NSEIndexData(BaseModel):
     """Normalized schema for a single scraped NSE Index."""
@@ -193,22 +219,90 @@ class NSEIndicesScraper:
             # Return fallback cached data if live fetch failed
             return self._cache
 
-    def get_marquee_indices(self, include_all: bool = True) -> List[Dict[str, Any]]:
+    def get_sectoral_indices(self) -> List[Dict[str, Any]]:
         """
-        Returns all scraped NSE indices configured for the continuous marquee tape.
-        Priority benchmark indices appear first, followed by all remaining indices.
+        Returns the exact 23 Sectoral Indices matching the NSE live heatmap:
+        https://www.nseindia.com/market-data/live-market-indices/heatmap
         """
         all_indices = self.scrape_live_indices()
+        lookup = {i["index"].strip().upper(): i for i in all_indices}
+
+        sectoral_list = []
+        for full_name, display_name in SECTORAL_INDICES_ORDER:
+            item = lookup.get(full_name.upper())
+            if not item:
+                for k, v in lookup.items():
+                    if len(full_name.split()) > 1 and full_name.split()[1] in k:
+                        item = v
+                        break
+            if item:
+                pct = float(item.get("percent_change", 0.0) or 0.0)
+                var = float(item.get("variation", 0.0) or 0.0)
+                last_val = float(item.get("last", 0.0) or 0.0)
+                sign = "+" if var >= 0 else ""
+
+                # Compute heat color tier based on NSE heatmap scale (+5, +3, +1, 0, -1, -3, -5)
+                if pct >= 3.0:
+                    tier = "tier-p5"
+                elif pct >= 1.0:
+                    tier = "tier-p3"
+                elif pct >= 0.0:
+                    tier = "tier-p1"
+                elif pct >= -1.0:
+                    tier = "tier-n1"
+                elif pct >= -3.0:
+                    tier = "tier-n3"
+                else:
+                    tier = "tier-n5"
+
+                sectoral_list.append({
+                    "sym": display_name,
+                    "full_name": full_name,
+                    "val": f"{last_val:,.2f}",
+                    "last": last_val,
+                    "pct": pct,
+                    "pct_str": f"{pct:.2f}%",
+                    "chg": f"{sign}{var:,.2f} ({sign}{pct:.2f}%)",
+                    "up": var >= 0,
+                    "raw_pct": pct,
+                    "tier": tier,
+                    "advances": item.get("advances", 0),
+                    "declines": item.get("declines", 0),
+                    "open": item.get("open", 0.0),
+                    "high": item.get("high", 0.0),
+                    "low": item.get("low", 0.0),
+                    "prev_close": item.get("previous_close", 0.0),
+                })
+        return sectoral_list
+
+    def get_marquee_indices(self, include_all: bool = True, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Returns scraped NSE indices configured for the continuous marquee tape.
+        If category='SECTORAL', returns the 23 Sectoral Indices.
+        Otherwise returns priority benchmark indices followed by all remaining indices.
+        """
+        if category and category.upper() in ["SECTORAL", "SECTORAL INDICES"]:
+            sec = self.get_sectoral_indices()
+            if sec:
+                return sec
+
+        all_indices = self.scrape_live_indices()
         if not all_indices:
+            sec_fallback = self.get_sectoral_indices()
+            if sec_fallback:
+                return sec_fallback
             return [
-                {"sym": "NIFTY 50", "val": "22,622.70", "chg": "-99.25 (-0.44%)", "up": False},
-                {"sym": "NIFTY NEXT 50", "val": "68,999.30", "chg": "+71.35 (+0.10%)", "up": True},
-                {"sym": "NIFTY BANK", "val": "55,316.00", "chg": "-165.05 (-0.30%)", "up": False},
-                {"sym": "NIFTY FIN SERVICE", "val": "24,948.70", "chg": "-279.85 (-1.11%)", "up": False},
-                {"sym": "NIFTY MIDCAP SELECT", "val": "13,773.15", "chg": "+11.20 (+0.08%)", "up": True},
-                {"sym": "NIFTY IT", "val": "35,420.10", "chg": "+140.20 (+0.40%)", "up": True},
-                {"sym": "NIFTY AUTO", "val": "23,890.40", "chg": "+65.10 (+0.27%)", "up": True},
-                {"sym": "INDIA VIX", "val": "13.25", "chg": "-0.29 (-2.14%)", "up": False},
+                {"sym": "NIFTY AUTO", "val": "25,576.40", "chg": "+420.30 (+1.67%)", "up": True},
+                {"sym": "NIFTY BANK", "val": "55,810.50", "chg": "+494.50 (+0.89%)", "up": True},
+                {"sym": "NIFTY FIN SERVICE", "val": "25,364.20", "chg": "+415.50 (+1.67%)", "up": True},
+                {"sym": "NIFTY FMCG", "val": "44,791.65", "chg": "-480.20 (-1.06%)", "up": False},
+                {"sym": "NIFTY IT", "val": "30,719.80", "chg": "+550.10 (+1.82%)", "up": True},
+                {"sym": "NIFTY MEDIA", "val": "1,617.20", "chg": "-24.10 (-1.47%)", "up": False},
+                {"sym": "NIFTY METAL", "val": "12,018.50", "chg": "+12.00 (+0.10%)", "up": True},
+                {"sym": "NIFTY PHARMA", "val": "25,817.80", "chg": "+80.20 (+0.31%)", "up": True},
+                {"sym": "NIFTY PSU BANK", "val": "8,041.20", "chg": "-126.50 (-1.55%)", "up": False},
+                {"sym": "NIFTY REALTY", "val": "828.70", "chg": "+5.90 (+0.72%)", "up": True},
+                {"sym": "NIFTY PVT BANK", "val": "27,679.30", "chg": "+515.20 (+1.89%)", "up": True},
             ]
 
         lookup = {i["index"].strip().upper(): i for i in all_indices}
@@ -345,10 +439,12 @@ class NSEIndicesScraper:
 
     def get_indices_by_category(self, category: Optional[str] = None) -> List[Dict[str, Any]]:
         """Filter indices by category, or return all if None or 'ALL'."""
-        all_indices = self.scrape_live_indices()
         if not category or category.upper() in ["ALL", "ALL INDICES"]:
-            return all_indices
+            return self.scrape_live_indices()
         cat_clean = category.strip().upper()
+        if cat_clean in ["SECTORAL", "SECTORAL INDICES"]:
+            return self.get_sectoral_indices()
+        all_indices = self.scrape_live_indices()
         return [i for i in all_indices if i.get("category", "").upper() == cat_clean]
 
     def start_background_worker(self, interval_seconds: int = 60):

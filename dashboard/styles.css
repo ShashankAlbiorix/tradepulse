@@ -1165,3 +1165,189 @@ div[data-baseweb="tab-highlight"] {
     display: inline-block;
 }
 
+/* ==========================================================================
+   NSE Sectoral Indices Heatmap Matrix
+   ========================================================================== */
+.sectoral-heatmap-wrapper {
+    background: rgba(18, 26, 44, 0.75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.40);
+}
+
+.sectoral-heatmap-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.sectoral-title-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sectoral-title-text {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #F8FAFC;
+    letter-spacing: -0.3px;
+}
+
+.sectoral-count-badge {
+    background: rgba(56, 189, 248, 0.15);
+    color: #38BDF8;
+    border: 1px solid rgba(56, 189, 248, 0.30);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.sectoral-legend {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.70rem;
+    font-weight: 700;
+}
+
+.legend-pill {
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+    display: inline-block;
+}
+
+.legend-p5 { background: #059669; }
+.legend-p3 { background: #10B981; }
+.legend-p1 { background: #34D399; color: #064E3B; }
+.legend-zero { background: #64748B; }
+.legend-n1 { background: #F87171; color: #450A0A; }
+.legend-n3 { background: #EF4444; }
+.legend-n5 { background: #B91C1C; }
+
+.sectoral-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 10px;
+}
+
+.sector-card {
+    border-radius: 8px;
+    padding: 10px 12px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: default;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 72px;
+}
+
+.sector-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+.sector-card-name {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sector-card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.sector-card-val {
+    font-size: 0.90rem;
+    font-weight: 700;
+}
+
+.sector-card-pct {
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+/* Card color tiers matching NSE Heatmap */
+.sector-tier-p5 {
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.92), rgba(4, 120, 87, 0.96));
+    color: #FFFFFF;
+}
+.sector-tier-p3 {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.88), rgba(5, 150, 105, 0.92));
+    color: #FFFFFF;
+}
+.sector-tier-p1 {
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.75), rgba(16, 185, 129, 0.80));
+    color: #064E3B;
+}
+.sector-tier-p1 .sector-card-name {
+    color: #022C22;
+}
+.sector-tier-n1 {
+    background: linear-gradient(135deg, rgba(248, 113, 113, 0.80), rgba(239, 68, 68, 0.85));
+    color: #450A0A;
+}
+.sector-tier-n1 .sector-card-name {
+    color: #450A0A;
+}
+.sector-tier-n3 {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.90), rgba(220, 38, 38, 0.95));
+    color: #FFFFFF;
+}
+.sector-tier-n5 {
+    background: linear-gradient(135deg, rgba(185, 28, 28, 0.94), rgba(153, 27, 27, 0.98));
+    color: #FFFFFF;
+}
+
+/* Specific faster marquee animation for 23 sectoral items */
+.ticker-items-container-sectoral {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    width: max-content;
+    will-change: transform;
+    animation: tickerMarqueeSectoral 60s linear infinite;
+    position: relative;
+    z-index: 1 !important;
+}
+
+.market-ticker-ribbon:hover .ticker-items-container-sectoral {
+    animation-play-state: paused;
+    cursor: pointer;
+}
+
+@keyframes tickerMarqueeSectoral {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    100% {
+        transform: translate3d(-50%, 0, 0);
+    }
+}
+
+

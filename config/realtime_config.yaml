@@ -1,0 +1,53 @@
+# ==============================================================================
+# TradePulse Real-Time Stock & Index Streaming Client Configuration
+# ==============================================================================
+# Compliance Notice:
+# Ensure compliance with exchange and provider Terms of Service (ToS)
+# and use licensed/authorized market data feeds for production environments.
+# ==============================================================================
+
+# WebSocket Connection Settings
+websocket_url: "wss://example-data-provider/realtime"
+
+# Optional authentication token / API Key (sent via headers or query params)
+api_key: ""
+api_key_header: "X-API-Key"
+
+# Dynamic subscription message template
+subscribe_message:
+  action: "subscribe"
+  symbols:
+    - "BHARTIARTL"
+
+# Target symbols to monitor (Set to only RELIANCE as requested)
+symbols:
+  - "BHARTIARTL"
+
+# REST Polling Live Settings (Queries REAL live market data from NSE India)
+polling_url: "https://www.nseindia.com/market-data/live-equity-market?symbol=NIFTY%2050"
+poll_interval_seconds: 5.0
+poll_rate_limit_per_minute: 60
+
+# Reconnection & Resilience Settings
+reconnect_max_attempts: 10
+reconnect_base_delay_seconds: 1.0
+reconnect_max_delay_seconds: 30.0
+ping_interval_seconds: 20.0
+ping_timeout_seconds: 10.0
+
+# Storage and Output Options: 'console', 'file', 'sqlite'
+output:
+  - "console"
+  - "file"
+  - "sqlite"
+
+storage:
+  in_memory_limit: 100
+  file_path: "data/ticks.jsonl"
+  sqlite_db_path: "data/market_data.db"
+
+# Logging Configuration
+logging:
+  level: "INFO"       # DEBUG, INFO, WARNING, ERROR
+  json_format: false  # true for structured JSON lines, false for human-readable
+  log_file: "logs/market_ws.log"

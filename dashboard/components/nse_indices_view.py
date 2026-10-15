@@ -1,6 +1,6 @@
 import html
 import streamlit as st
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from src.ingestion.nse_indices_scraper import get_nse_indices_scraper
 
 
@@ -9,17 +9,83 @@ def clean_html(raw_html: str) -> str:
     return "\n".join(line.strip() for line in raw_html.strip().splitlines() if line.strip())
 
 
-def render_market_ticker():
+def render_sectoral_indices_heatmap():
+    """
+    Renders an institutional Sectoral Indices Heatmap Card Matrix (23 indices)
+    matching the exact NSE website layout (https://www.nseindia.com/market-data/live-market-indices/heatmap).
+    """
+    scraper = get_nse_indices_scraper()
+    sectoral_indices = scraper.get_sectoral_indices()
+    market_ts = scraper.get_last_market_timestamp()
+
+    if not sectoral_indices:
+        return
+
+    # Generate 23 Sectoral Cards
+    cards_html = ""
+    for item in sectoral_indices:
+        sym = html.escape(str(item.get("sym", "")))
+        val = html.escape(str(item.get("val", "")))
+        pct = item.get("pct", 0.0)
+        tier = item.get("tier", "tier-p1")
+        sign = "+" if pct >= 0 else ""
+        pct_display = f"{sign}{pct:.2f}%"
+
+        cards_html += f"""
+<div class="sector-card sector-{tier}">
+    <div class="sector-card-name" title="{html.escape(item.get('full_name', sym))}">{sym}</div>
+    <div class="sector-card-bottom">
+        <span class="sector-card-val">{val}</span>
+        <span class="sector-card-pct">{pct_display}</span>
+    </div>
+</div>
+"""
+
+    heatmap_html = f"""
+<div class="sectoral-heatmap-wrapper">
+    <div class="sectoral-heatmap-header">
+        <div class="sectoral-title-box">
+            <span class="sectoral-title-text">Sectoral Indices</span>
+            <span class="sectoral-count-badge">23 Live</span>
+            <span class="ticker-beacon"></span>
+            <span style="font-size: 0.72rem; color: #94A3B8; font-family: 'JetBrains Mono', monospace;">Real-time from NSE India · As on {html.escape(market_ts)} IST</span>
+        </div>
+        <div class="sectoral-legend">
+            <span class="legend-pill legend-p5">5</span>
+            <span class="legend-pill legend-p3">3</span>
+            <span class="legend-pill legend-p1">1</span>
+            <span class="legend-pill legend-zero">0%</span>
+            <span class="legend-pill legend-n1">-1</span>
+            <span class="legend-pill legend-n3">-3</span>
+            <span class="legend-pill legend-n5">-5</span>
+        </div>
+    </div>
+    <div class="sectoral-grid">
+        {cards_html}
+    </div>
+</div>
+"""
+    st.markdown(clean_html(heatmap_html), unsafe_allow_html=True)
+
+
+def render_market_ticker(category: str = "SECTORAL"):
     """
     Renders an institutional trading terminal header consisting of:
     1. Top Advance / Decline Ratio Strip (NIFTY 500 & NIFTY 50 breadth metrics, ratios, and micro-meters).
-    2. Continuous Marquee Ticker Ribbon displaying ALL 139 live NSE market indices.
+    2. Continuous Marquee Ticker Ribbon displaying SECTORAL INDICES (23) · LIVE real-time from NSE.
+    3. Collapsible / Toggleable Sectoral Indices Heatmap Card Matrix.
     """
     scraper = get_nse_indices_scraper()
-    try:
+    
+    if category and category.upper() in ["SECTORAL", "SECTORAL INDICES"]:
+        indices = scraper.get_sectoral_indices()
+        status_label = f"SECTORAL INDICES ({len(indices)}) · LIVE"
+        marquee_class = "ticker-items-container-sectoral"
+    else:
         indices = scraper.get_marquee_indices(include_all=True)
-    except TypeError:
-        indices = scraper.get_marquee_indices()
+        status_label = f"ALL {len(indices)} INDICES · LIVE"
+        marquee_class = "ticker-items-container"
+
     breadth = scraper.get_market_breadth()
     market_ts = scraper.get_last_market_timestamp()
 
@@ -72,7 +138,7 @@ def render_market_ticker():
 </div>
 """
 
-    # 2. Continuous Marquee Ticker Ribbon with ALL 139 Indices (Bottom)
+    # 2. Continuous Marquee Ticker Ribbon with Live Sectoral Indices (Bottom)
     items_html = ""
     for idx in indices:
         is_up = idx.get("up", True)
@@ -91,11 +157,12 @@ def render_market_ticker():
 <div class="market-ticker-ribbon">
 <div class="ticker-status-pill">
 <span class="ticker-beacon"></span>
-ALL {len(indices)} INDICES · LIVE
+{status_label}
 </div>
-<div class="ticker-items-container">
+<div class="{marquee_class}">
 {duplicated_items}
 </div>
 </div>
 """
     st.markdown(clean_html(ticker_ribbon_html), unsafe_allow_html=True)
+

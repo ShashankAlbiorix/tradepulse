@@ -35,7 +35,7 @@ def format_to_ist(date_str: str) -> str:
         return date_str[:19].replace("T", " ") + " IST"
 
 
-from dashboard.components.nse_indices_view import render_market_ticker
+from dashboard.components.nse_indices_view import render_market_ticker, render_sectoral_indices_heatmap
 
 
 def get_source_badge_class(source_name: str) -> str:
@@ -64,8 +64,12 @@ def render_news_terminal(articles: List[Dict[str, Any]], search_query: str = "",
         st.info("💡 No news articles in database. Click **'⚡ Fetch Now'** at the top right to fetch and analyze live feeds across all news providers.")
         return
 
-    # 1. Market Breadth Advance/Decline Strip & Live Ticker Marquee (All 139 Indices)
-    render_market_ticker()
+    # 1. Market Breadth Advance/Decline Strip & Live Sectoral Indices Marquee (23 Indices)
+    render_market_ticker(category="SECTORAL")
+
+    # 1b. Interactive Sectoral Indices Heatmap Matrix (matching exact NSE live layout)
+    with st.expander("📊 Live Sectoral Indices Heatmap Matrix (23) · Real-time from NSE India", expanded=False):
+        render_sectoral_indices_heatmap()
 
     # 2. Boilerplate / Junk headline filter
     junk_headers = [
