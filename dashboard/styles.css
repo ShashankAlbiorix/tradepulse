@@ -605,6 +605,30 @@ button[kind="secondary"]:hover {
     transition: width 0.4s ease;
 }
 
+.barometer-labels-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.70rem;
+    font-weight: 700;
+    margin-top: 5px;
+    padding: 0 1px;
+    letter-spacing: 0.1px;
+}
+
+.baro-lbl-bull {
+    color: #10B981;
+}
+
+.baro-lbl-neut {
+    color: #38BDF8;
+}
+
+.baro-lbl-bear {
+    color: #F87171;
+}
+
 /* ==========================================================================
    Live Auto-Refresh Status Bar
    ========================================================================== */

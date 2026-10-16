@@ -156,10 +156,15 @@ def render_news_terminal(articles: List[Dict[str, Any]], search_query: str = "",
 <div class="kpi-main-stat" style="font-size: 1.12rem; color: {stance_color}; line-height: 1.3;">
 {stance_text}
 </div>
-<div class="sentiment-barometer-track">
+<div class="sentiment-barometer-track" title="Bullish: {bull_pct}% | Neutral: {neut_pct}% | Bearish: {bear_pct}%">
 <div class="barometer-seg-bull" style="width: {bull_pct}%;"></div>
 <div class="barometer-seg-neut" style="width: {neut_pct}%;"></div>
 <div class="barometer-seg-bear" style="width: {bear_pct}%;"></div>
+</div>
+<div class="barometer-labels-row">
+<span class="baro-lbl-bull">▲ {bull_pct}% Bull</span>
+<span class="baro-lbl-neut">● {neut_pct}% Neutral</span>
+<span class="baro-lbl-bear">▼ {bear_pct}% Bear</span>
 </div>
 </div>
 </div>
