@@ -127,7 +127,7 @@ def render_news_terminal(articles: List[Dict[str, Any]], search_query: str = "",
 <span>📰 FEEDS</span>
 </div>
 <div class="kpi-main-stat">{total_active}</div>
-<div class="kpi-sub-stat" style="color: #94A3B8;">Across 5 Tier-1 Providers</div>
+<div class="kpi-sub-stat" style="color: #94A3B8;">Across 4 Tier-1 Providers</div>
 </div>
 
 <div class="kpi-tile">
@@ -181,7 +181,7 @@ def render_news_terminal(articles: List[Dict[str, Any]], search_query: str = "",
     with col_filter_src:
         source_filter = st.pills(
             "Source Filter",
-            options=["All Sources", "LiveMint", "Economic Times", "Moneycontrol", "NDTV Profit", "Business Standard"],
+            options=["All Sources", "LiveMint", "Economic Times", "NDTV Profit", "Business Standard"],
             default="All Sources",
             label_visibility="collapsed",
             key="terminal_source_filter"

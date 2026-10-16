@@ -201,7 +201,6 @@ def main():
     st.sidebar.markdown("### 📰 Connected News Providers")
     st.sidebar.markdown("""
     - **Economic Times** (Markets & Corporate)
-    - **Moneycontrol** (Latest News & Markets)
     - **LiveMint** (Companies & Economy)
     - **NDTV Profit** (Business & Stocks)
     - **Business Standard** (Companies & Markets)

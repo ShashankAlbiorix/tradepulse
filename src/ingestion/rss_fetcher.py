@@ -20,8 +20,6 @@ DEFAULT_RSS_FEEDS: Dict[str, str] = {
     "LiveMint Industry": "https://www.livemint.com/rss/industry",
     "Economic Times Markets": "https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms",
     "Economic Times Stocks": "https://economictimes.indiatimes.com/markets/stocks/rssfeeds/2146842.cms",
-    "Moneycontrol Latest": "https://www.moneycontrol.com/rss/latestnews.xml",
-    "Moneycontrol Markets": "https://www.moneycontrol.com/rss/marketreports.xml",
     "NDTV Profit": "https://feeds.feedburner.com/ndtvprofit-latest",
     "Business Standard Markets": "https://www.business-standard.com/rss/markets-106.rss",
     "Business Standard Companies": "https://www.business-standard.com/rss/companies-101.rss",

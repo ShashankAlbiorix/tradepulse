@@ -20,7 +20,7 @@ An autonomous Agentic AI pipeline that continuously ingests financial news feeds
 ```text
 ┌─────────────────────────────────────────────────────────────┐
 │                    1. DATA INGESTION                        │
-│  RSS Feeds (ET, Moneycontrol, Mint, NDTV) + Portal Scrapers │
+│  RSS Feeds (ET, Mint, NDTV, BS) + Portal Scrapers          │
 └──────────────────────────────┬──────────────────────────────┘
                                │
                                ▼
